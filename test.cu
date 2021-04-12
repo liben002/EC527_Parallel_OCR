@@ -10,8 +10,8 @@ __global__ void CUDA_MAT_SUBT(float *A, float *B, float *C)
 
 	// if (row < 4 && col < 4) {
 		// for (int k = 0; k < 4; k++) {
-			C[row*4+col] = A[row*4+col] - B[row*4+col];
-			// C[row*4+col] = 5;
+			// C[row*4+col] = A[row*4+col] - B[row*4+col];
+			C[row*4+col] = 5;
 			// __syncthreads();
 		// }
 	// }
