@@ -9,12 +9,9 @@ __global__ void CUDA_MAT_SUBT(T *d_A, T *d_B, T *d_C)
 	int row = blockIdx.x * blockDim.x + threadIdx.x;
 	int col = blockIdx.y * blockDim.y + threadIdx.y;
 
-	// if (row < 4 && col < 4) {
-		// for (int k = 0; k < 4; k++) {
-			d_C[row*4+col] = d_A[row*4+col] - d_B[row*4+col];
-			// __syncthreads();
-		// }
-	// }
+	if (row < 4 && col < 4)
+		d_C[row*4+col] = d_A[row*4+col] - d_B[row*4+col];
+
 }
 
 template <typename T>
@@ -46,7 +43,7 @@ std::vector<std::valarray<T> > operator-(const std::vector<std::valarray<T> > &A
 		printf("BAD\n");
 	}
 
-	size_t mat_size = shape_a.first * shape_a.second * sizeof(int);
+	size_t mat_size = shape_a.first * shape_a.second * sizeof(T);
 	printf("Matrix dimensions: %d x %d, Size of matrix in bytes: %d\n", shape_a.first, shape_a.second, mat_size);
 
 	// Error code to check return values for CUDA calls
@@ -89,9 +86,9 @@ std::vector<std::valarray<T> > operator-(const std::vector<std::valarray<T> > &A
 
 	// Allocate device vector
 	printf("Allocating device vectors.\n");
-	int *d_A = NULL;
-	int *d_B = NULL;
-	int *d_C = NULL;
+	T *d_A = NULL;
+	T *d_B = NULL;
+	T *d_C = NULL;
 
 	err = cudaMalloc((void **) &d_A, mat_size);
 	err = cudaMalloc((void **) &d_B, mat_size);
@@ -101,8 +98,8 @@ std::vector<std::valarray<T> > operator-(const std::vector<std::valarray<T> > &A
 	err = cudaMemcpy(d_A, h_A, mat_size, cudaMemcpyHostToDevice);
 	err = cudaMemcpy(d_B, h_B, mat_size, cudaMemcpyHostToDevice);
 
-	dim3 dimBlock(4, 4);
-	dim3 dimGrid(1, 1);
+	dim3 dimBlock(8, 8);
+	dim3 dimGrid(4, 4);
 	printf("Launching CUDA kernel with %d blocks and %d threads.\n", 4, 4 * 4);
 
 	CUDA_MAT_SUBT<<<dimGrid, dimBlock>>>(d_A, d_B, d_C);
@@ -154,19 +151,12 @@ std::vector<std::valarray<T> > operator-(const std::vector<std::valarray<T> > &A
 	}
 
 	std::vector<std::valarray<T> > C;         // Vector to store result
-	for (size_t i = 0; i < A.size(); i++) {  // For every row
+	for (int i = 0; i < A.size(); i++) {  // For every row
 		C.push_back(A[i] - B[i]);            // Elementwise substraction
 	}
 
 	return C;  // Return new resultant 2D vector
 }
-
-// void print(const char* rem, const std::valarray<int>& v)
-// {
-//     std::cout << std::left << std::setw(36) << rem << std::right;
-//     for (int n: v) std::cout << std::setw(3) << n;
-//     std::cout << '\n';
-// }
 
 int main() {
 
