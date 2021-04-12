@@ -8,14 +8,14 @@ __global__ void CUDA_MAT_SUBT(float *A, float *B, float *C)
 	int row = blockIdx.x * blockDim.x + threadIdx.x;
 	int col = blockIdx.y * blockDim.y + threadIdx.y;
 
-	for (int k = 0; k < ROW_LENGTH; k++) {
-		C[row*ROW_LENGTH+col] = A[row*ROW_LENGTH+k] - B[k*ROW_LENGTH+col];
+	for (int k = 0; k < 10; k++) {
+		C[row*10+col] = A[row*10+k] - B[row*10+k];
 		__syncthreads();
 	}
 }
 
 template <typename T>
-std::pair<size_t, size_t> get_shape(const std::vector<std::valarray<T>> &A)
+std::pair<size_t, size_t> get_shape(const std::vector<std::valarray<T> > &A)
 {
 	const size_t sub_size = (*A.begin()).size();
 	for (const auto &a : A)
@@ -31,7 +31,7 @@ std::pair<size_t, size_t> get_shape(const std::vector<std::valarray<T>> &A)
 }
 
 template <typename T>
-std::vector<std::valarray<T>> operator-(const std::vector<std::valarray<T>> &A, const std::vector<std::valarray<T>> &B)
+std::vector<std::valarray<T>> operator-(const std::vector<std::valarray<T> > &A, const std::vector<std::valarray<T> > &B)
 {
 	const auto shape_a = get_shape(A);
 	const auto shape_b = get_shape(B);
@@ -122,7 +122,7 @@ std::vector<std::valarray<T>> operator-(const std::vector<std::valarray<T>> &A, 
 
 	err = cudaDeviceReset();
 
-	std::vector<std::valarray<T>> C;         // Vector to store result
+	std::vector<std::valarray<T> > C;         // Vector to store result
 	for (size_t i = 0; i < A.size(); i++) {  // For every row
 		C.push_back(A[i] - B[i]);            // Elementwise substraction
 	}
@@ -130,16 +130,16 @@ std::vector<std::valarray<T>> operator-(const std::vector<std::valarray<T>> &A, 
 	return C;  // Return new resultant 2D vector
 }
 
-void print(const char* rem, const std::valarray<int>& v)
-{
-    std::cout << std::left << std::setw(36) << rem << std::right;
-    for (int n: v) std::cout << std::setw(3) << n;
-    std::cout << '\n';
-}
+// void print(const char* rem, const std::valarray<int>& v)
+// {
+//     std::cout << std::left << std::setw(36) << rem << std::right;
+//     for (int n: v) std::cout << std::setw(3) << n;
+//     std::cout << '\n';
+// }
 
 int main() {
 
-	std::vector<std::valarray<int>> A, B, C;
+	std::vector<std::valarray<int> > A, B, C;
 
 	for (int i = 0 ;i < 10 ; i++) {
 		std::valarray<int> temp1(1,5);
@@ -154,8 +154,11 @@ int main() {
 
 	C = A - B;
 
+	printf("Correct value: \n");
 	for (int i = 0 ; i < 10; i ++) {
-		std::valarray<int> temp = C[i];
-		print(" ", temp);
+		for (int j = 0; j < 5; j++) {
+			printf("%d ", C[i][j]);
+		}
+		printf("\n");
 	}
 }
