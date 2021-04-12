@@ -11,11 +11,11 @@ __global__ void CUDA_MAT_SUBT(float d_A, float *d_B, float *d_C)
 	// if (row < 4 && col < 4) {
 		// for (int k = 0; k < 4; k++) {
 			// C[row*4+col] = A[row*4+col] - B[row*4+col];
-			C[0] = 5;
-			C[1] = 5;
-			C[2] = 5;
-			C[3] = 5;
-			C[4] = 5;
+			d_C[0] = 5;
+			d_C[1] = 5;
+			d_C[2] = 5;
+			d_C[3] = 5;
+			d_C[4] = 5;
 			// __syncthreads();
 		// }
 	// }
@@ -136,6 +136,12 @@ std::vector<std::valarray<T> > operator-(const std::vector<std::valarray<T> > &A
 	free(h_C);
 
 	err = cudaDeviceReset();
+
+	if (err != cudaSuccess)
+	{
+		fprintf(stderr, "Failed to allocate device vector A (error code: %s)!\n", cudaGetErrorString(err));
+		exit(EXIT_FAILURE);
+	}
 
 	std::vector<std::valarray<T> > C;         // Vector to store result
 	for (size_t i = 0; i < A.size(); i++) {  // For every row
