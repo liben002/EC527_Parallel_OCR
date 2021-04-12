@@ -3,7 +3,8 @@
 #include <valarray>
 #include <iomanip>
 
-__global__ void CUDA_MAT_SUBT(int *d_A, int *d_B, int *d_C)
+template <typename T>
+__global__ void CUDA_MAT_SUBT(T *d_A, T *d_B, T *d_C)
 {
 	int row = blockIdx.x * blockDim.x + threadIdx.x;
 	int col = blockIdx.y * blockDim.y + threadIdx.y;
