@@ -148,8 +148,8 @@ int main() {
 	std::vector<std::valarray<int> > A, B, C;
 
 	for (int i = 0 ; i < 4; i++) {
-		std::valarray<int> temp1(1,5);
-		std::valarray<int> temp2(1,5);
+		std::valarray<int> temp1(1,4);
+		std::valarray<int> temp2(1,4);
 		for (int i = 0; i < 4; i++) {
 			temp1[i] = i;
 			temp2[i] = i*4;
