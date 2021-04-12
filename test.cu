@@ -4,13 +4,13 @@
 #include <iomanip>
 
 template <typename T>
-__global__ void CUDA_MAT_SUBT(T *d_A, T *d_B, T *d_C)
+__global__ void CUDA_MAT_SUBT(T *d_A, T *d_B, T *d_C, row_len, col_len)
 {
 	int row = blockIdx.x * blockDim.x + threadIdx.x;
 	int col = blockIdx.y * blockDim.y + threadIdx.y;
 
-	if (row < 4 && col < 4)
-		d_C[row*4+col] = d_A[row*4+col] - d_B[row*4+col];
+	if (row < row_len && col < col_len)
+		d_C[row*row_len+col] = d_A[row*row_len+col] - d_B[row*row_len+col];
 
 }
 
@@ -102,7 +102,7 @@ std::vector<std::valarray<T> > operator-(const std::vector<std::valarray<T> > &A
 	dim3 dimGrid(4, 4);
 	printf("Launching CUDA kernel with %d blocks and %d threads.\n", 4, 4 * 4);
 
-	CUDA_MAT_SUBT<<<dimGrid, dimBlock>>>(d_A, d_B, d_C);
+	CUDA_MAT_SUBT<<<dimGrid, dimBlock>>>(d_A, d_B, d_C, shape_a.first, shape_a.second);
 
 	err = cudaGetLastError();
 
