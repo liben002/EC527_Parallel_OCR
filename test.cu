@@ -31,7 +31,7 @@ std::pair<size_t, size_t> get_shape(const std::vector<std::valarray<T> > &A)
 }
 
 template <typename T>
-std::vector<std::valarray<T>> operator-(const std::vector<std::valarray<T> > &A, const std::vector<std::valarray<T> > &B)
+std::vector<std::valarray<T> > operator-(const std::vector<std::valarray<T> > &A, const std::vector<std::valarray<T> > &B)
 {
 	const auto shape_a = get_shape(A);
 	const auto shape_b = get_shape(B);
