@@ -3,7 +3,7 @@
 #include <valarray>
 #include <iomanip>
 
-__global__ void CUDA_MAT_SUBT(float *d_A, float *d_B, float *d_C)
+__global__ void CUDA_MAT_SUBT(int *d_A, int *d_B, int *d_C)
 {
 	int row = blockIdx.x * blockDim.x + threadIdx.x;
 	int col = blockIdx.y * blockDim.y + threadIdx.y;
@@ -50,7 +50,7 @@ std::vector<std::valarray<T> > operator-(const std::vector<std::valarray<T> > &A
 		printf("BAD\n");
 	}
 
-	size_t mat_size = shape_a.first * shape_a.second * sizeof(T);
+	size_t mat_size = shape_a.first * shape_a.second * sizeof(int);
 	printf("Matrix dimensions: %d x %d, Size of matrix in bytes: %d\n", shape_a.first, shape_a.second, mat_size);
 
 	// Error code to check return values for CUDA calls
@@ -93,9 +93,9 @@ std::vector<std::valarray<T> > operator-(const std::vector<std::valarray<T> > &A
 
 	// Allocate device vector
 	printf("Allocating device vectors.\n");
-	float *d_A = NULL;
-	float *d_B = NULL;
-	float *d_C = NULL;
+	int *d_A = NULL;
+	int *d_B = NULL;
+	int *d_C = NULL;
 
 	err = cudaMalloc((void **) &d_A, mat_size);
 	err = cudaMalloc((void **) &d_B, mat_size);
