@@ -3,7 +3,7 @@
 #include <valarray>
 #include <iomanip>
 
-__global__ void CUDA_MAT_SUBT(float *A, float *B, float *C)
+__global__ void CUDA_MAT_SUBT(float d_A, float *d_B, float *d_C)
 {
 	int row = blockIdx.x * blockDim.x + threadIdx.x;
 	int col = blockIdx.y * blockDim.y + threadIdx.y;
@@ -11,7 +11,11 @@ __global__ void CUDA_MAT_SUBT(float *A, float *B, float *C)
 	// if (row < 4 && col < 4) {
 		// for (int k = 0; k < 4; k++) {
 			// C[row*4+col] = A[row*4+col] - B[row*4+col];
-			C[row*4+col] = 5;
+			C[0] = 5;
+			C[1] = 5;
+			C[2] = 5;
+			C[3] = 5;
+			C[4] = 5;
 			// __syncthreads();
 		// }
 	// }
