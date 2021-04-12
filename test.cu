@@ -8,9 +8,9 @@ __global__ void CUDA_MAT_SUBT(float *A, float *B, float *C)
 	int row = blockIdx.x * blockDim.x + threadIdx.x;
 	int col = blockIdx.y * blockDim.y + threadIdx.y;
 
-	if (row < 10 && col < 5) {
-		for (int k = 0; k < 10; k++) {
-			C[row*10+col] = A[row*10+k] - B[row*10+k];
+	if (row < 4 && col < 4) {
+		for (int k = 0; k < 4; k++) {
+			C[row*4+k] = A[row*4+k] - B[row*4+k];
 			__syncthreads();
 		}
 	}
@@ -96,9 +96,9 @@ std::vector<std::valarray<T> > operator-(const std::vector<std::valarray<T> > &A
 	err = cudaMemcpy(d_A, h_A, mat_size, cudaMemcpyHostToDevice);
 	err = cudaMemcpy(d_B, h_B, mat_size, cudaMemcpyHostToDevice);
 
-	dim3 dimBlock(16, 16);
-	dim3 dimGrid(16, 16);
-	printf("Launching CUDA kernel with %d blocks and %d threads.\n", 16, 16 * 16);
+	dim3 dimBlock(1, 1);
+	dim3 dimGrid(4, 4);
+	printf("Launching CUDA kernel with %d blocks and %d threads.\n", 4, 4 * 4);
 
 	CUDA_MAT_SUBT<<<dimGrid, dimBlock>>>(d_A, d_B, d_C);
 
@@ -113,6 +113,7 @@ std::vector<std::valarray<T> > operator-(const std::vector<std::valarray<T> > &A
 		printf("\n");
 	}
 
+	printf("Freeing\n");
 	// Free device global memory
 	err = cudaFree(d_A);
 
@@ -146,10 +147,10 @@ int main() {
 
 	std::vector<std::valarray<int> > A, B, C;
 
-	for (int i = 0 ;i < 10 ; i++) {
+	for (int i = 0 ; i < 4; i++) {
 		std::valarray<int> temp1(1,5);
 		std::valarray<int> temp2(1,5);
-		for (int i = 0; i < 5; i++) {
+		for (int i = 0; i < 4; i++) {
 			temp1[i] = i;
 			temp2[i] = i*4;
 		}
@@ -160,8 +161,8 @@ int main() {
 	C = A - B;
 
 	printf("Correct value: \n");
-	for (int i = 0 ; i < 10; i ++) {
-		for (int j = 0; j < 5; j++) {
+	for (int i = 0 ; i < 4; i ++) {
+		for (int j = 0; j < 4; j++) {
 			printf("%d ", C[i][j]);
 		}
 		printf("\n");
