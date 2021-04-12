@@ -303,19 +303,21 @@ std::vector<std::vector<std::valarray<T>>> minmax_scaler(const std::vector<std::
 		std::exit(EXIT_FAILURE);
 	}
 
+	int length = B.size();
+
 	for (size_t i = 0; i < shape.second; i++)
 	{
 		T min = B[0][0][i], max = B[0][0][i];
-		for (size_t j = 0; j < B.size(); j++)
+		for (size_t j = 0; j < length; j++)
 		{
 			// Updating minimum and maximum values
 			min = std::min(min, B[j][0][i]);
 			max = std::max(max, B[j][0][i]);
 		}
-		for (size_t j = 0; j < B.size(); j++)
-		{
-			// Applying min-max scaler formula
-			B[j][0][i] = ((B[j][0][i] - min) / (max - min)) * (high - low) + low;
+
+		#pragma omp parallel for
+		for (size_t j = 0; j < length; j++) {
+			B[j][0][i] = ((B[j][0][i] - min) / (max - min)) * (high - low) + low; // Applying min-max scaler formula
 		}
 	}
 	return B;  // Return new resultant 3D vector
@@ -353,13 +355,18 @@ template <typename T>
 std::vector<std::valarray<T>> apply_function(const std::vector<std::valarray<T>> &A, T (*func)(const T &))
 {
 	std::vector<std::valarray<double>> B = A; // New vector to store resultant vector
-	for (auto &b : B) {     // For every row in vector
-		b = b.apply(func);  // Apply function to that row
+
+	int length = B.size();
+	for (int i = 0 ; i < length; i++) {     // For every row in vector
+		B[i] = B[i].apply(func);  // Apply function to that row
 	}
+
 	return B;  // Return new resultant 2D vector
 }
 
-// TODO: OpenMP
+// =========================================================================================
+// DONE
+// =========================================================================================
 /**
  * Overloaded operator "*" to multiply given 2D vector with scaler
  * @tparam T typename of both vector and the scaler
@@ -372,18 +379,21 @@ std::vector<std::valarray<T>> operator*(const std::vector<std::valarray<T>> &A, 
 {
 	std::vector<std::valarray<double>> B = A; // New vector to store resultant vector
 
-	// printf("SIZE 1: %d\n", B.size());
+	int length = B.size();
 	#pragma omp parallel for
-	for (int i = 0 ; i < B.size(); i++) {  // For every row in vector
+	for (int i = 0 ; i < length; i++) {  // For every row in vector
 		B[i] = B[i] * val;     // Multiply row with scaler
 	}
 	// for (auto &b : B) {  // For every row in vector
 	// 	b = b * val;     // Multiply row with scaler
 	// }
+
 	return B;  // Return new resultant 2D vector
 }
 
-// TODO: OpenMP
+// =========================================================================================
+// DONE
+// =========================================================================================
 /**
  * Overloaded operator "/" to divide given 2D vector with scaler
  * @tparam T typename of the vector and the scaler
@@ -396,9 +406,9 @@ std::vector<std::valarray<T>> operator/(const std::vector<std::valarray<T>> &A, 
 {
 	std::vector<std::valarray<double>> B = A; // New vector to store resultant vector
 
-	// printf("SIZE 2: %d\n", B.size());
+	int length = B.size();
 	#pragma omp parallel for
-	for (int i = 0 ; i < B.size(); i++) {  // For every row in vector
+	for (int i = 0 ; i < length; i++) {  // For every row in vector
 		B[i] = B[i] / val;     // Divide row with scaler
 	}
 	// for (auto &b : B) {  // For every row in vector
