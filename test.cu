@@ -111,8 +111,22 @@ std::vector<std::valarray<T> > operator-(const std::vector<std::valarray<T> > &A
 
 	CUDA_MAT_SUBT<<<dimGrid, dimBlock>>>(d_A, d_B, d_C);
 
+	err = cudaGetLastError();
+
+	if (err != cudaSuccess)
+	{
+		fprintf(stderr, "Failed to launch MMM kernel (error code: %s)!\n", cudaGetErrorString(err));
+		exit(EXIT_FAILURE);
+	}
+
 	printf("Copy output data from CUDA device to the host memory\n");
 	err = cudaMemcpy(h_C, d_C, mat_size, cudaMemcpyDeviceToHost);
+
+	if (err != cudaSuccess)
+	{
+		fprintf(stderr, "Failed to copy matrix from device to host (error code: %s)!\n", cudaGetErrorString(err));
+		exit(EXIT_FAILURE);
+	}
 
 	printf("h_C contains: \n");
 	for (int i = 0; i < shape_a.first; i++) {
