@@ -83,18 +83,21 @@ static void test() {
  */
 int main() {
 
-	struct timespec time_start_CPU, time_end_CPU;
+	// struct timespec time_start_CPU, time_end_CPU;
 
 	detect_threads_setting();
 
 	// start the timer
-	clock_gettime(CLOCK_PROCESS_CPUTIME_ID, &time_start_CPU);
+	// clock_gettime(CLOCK_PROCESS_CPUTIME_ID, &time_start_CPU);
+	auto start = std::chrono::high_resolution_clock::now();  // Start clock
 
 	test();
 
 	// stop the timer
-	clock_gettime(CLOCK_PROCESS_CPUTIME_ID, &time_end_CPU);
+	// clock_gettime(CLOCK_PROCESS_CPUTIME_ID, &time_end_CPU);
+	auto stop = std::chrono::high_resolution_clock::now();  // Stoping the clock
+	auto duration = std::chrono::duration_cast<std::chrono::microseconds>(stop - start);
 
-	printf("Time for learning over %d epochs: %f seconds\n", EPOCHS, interval(time_start_CPU, time_end_CPU));
+	printf("Time for learning over %d epochs: %f seconds\n", EPOCHS, duration.count() / 1e6);
 	return 0;
 }
