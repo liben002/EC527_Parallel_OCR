@@ -2,8 +2,10 @@
 #include <iostream>
 #include <time.h>
 #include <cassert>
+#include <omp.h>
 
 #define EPOCHS 100
+#define THREADS 4
 
 int clock_gettime(clockid_t clk_id, struct timespec *tp);
 
@@ -20,6 +22,38 @@ double interval(struct timespec start, struct timespec end)
 	return (((double)temp.tv_sec) + ((double)temp.tv_nsec)*1.0e-9);
 }
 
+void detect_threads_setting()
+{
+	long int i, ognt;
+	char * env_ONT;
+
+	//Find out how many threads OpenMP thinks it is wants to use
+	#pragma omp parallel for
+	for (i=0; i<1; i++) {
+		ognt = omp_get_num_threads();
+	}
+
+	printf("omp's default number of threads is %d\n", ognt);
+
+	//If this is illegal (0 or less), default to the "#define THREADS" value that is defined above
+	if (ognt <= 0) {
+		if (THREADS != ognt) {
+			printf("Overriding with #define THREADS value %d\n", THREADS);
+			ognt = THREADS;
+		}
+	}
+
+	omp_set_num_threads(ognt);
+
+	// Once again ask OpenMP how many threads it is going to use
+	#pragma omp parallel for
+	for (i=0; i<1; i++) {
+		ognt = omp_get_num_threads();
+	}
+
+	printf("Using %d threads for OpenMP\n", ognt);
+}
+
 /**
  * Function to test neural network
  * @returns none
@@ -27,7 +61,7 @@ double interval(struct timespec start, struct timespec end)
 static void test() {
 	// Creating network with 3 layers for "iris.csv"
 	// First layer neurons must match testing params
-	machine_learning::neural_network::NeuralNetwork myNN = machine_learning::neural_network::NeuralNetwork({ {4, "none"}, {60, "relu"}, {30, "sigmoid"} });
+	machine_learning::neural_network::NeuralNetwork myNN = machine_learning::neural_network::NeuralNetwork({ {4, "none"}, {600, "relu"}, {300, "sigmoid"} });
 
 	// Printing summary of model
 	myNN.summary();
@@ -50,6 +84,8 @@ static void test() {
 int main() {
 
 	struct timespec time_start_CPU, time_end_CPU;
+
+	detect_threads_setting();
 
 	// start the timer
 	clock_gettime(CLOCK_PROCESS_CPUTIME_ID, &time_start_CPU);
