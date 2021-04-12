@@ -8,12 +8,12 @@ __global__ void CUDA_MAT_SUBT(float *A, float *B, float *C)
 	int row = blockIdx.x * blockDim.x + threadIdx.x;
 	int col = blockIdx.y * blockDim.y + threadIdx.y;
 
-	if (row < 4 && col < 4) {
+	// if (row < 4 && col < 4) {
 		for (int k = 0; k < 4; k++) {
 			C[row*4+k] = A[row*4+k] - B[row*4+k];
 			__syncthreads();
 		}
-	}
+	// }
 }
 
 template <typename T>
