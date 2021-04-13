@@ -129,6 +129,15 @@ std::vector<std::valarray<T> > operator-(const std::vector<std::valarray<T> > &A
 		printf("\n");
 	}
 
+	std::vector<std::valarray<T> > C(shape_a.first);         // Vector to store result
+	for (size_t i = 0; i < shape_a.first; i++) {  // For every row
+		std::valarray<T> temp(1,shape_a.second);
+		for (size_t j = 0; j < shape_a.second; j++) {
+			temp[j] = h_C[i*shape_a.first + j];
+		}
+		C[i] = temp;            // Elementwise substraction
+	}
+
 	printf("Freeing\n");
 	// Free device global memory
 	err = cudaFree(d_A);
@@ -150,10 +159,10 @@ std::vector<std::valarray<T> > operator-(const std::vector<std::valarray<T> > &A
 		exit(EXIT_FAILURE);
 	}
 
-	std::vector<std::valarray<T> > C;         // Vector to store result
-	for (int i = 0; i < A.size(); i++) {  // For every row
-		C.push_back(A[i] - B[i]);            // Elementwise substraction
-	}
+	// std::vector<std::valarray<T> > C;         // Vector to store result
+	// for (int i = 0; i < A.size(); i++) {  // For every row
+	// 	C.push_back(A[i] - B[i]);            // Elementwise substraction
+	// }
 
 	return C;  // Return new resultant 2D vector
 }
