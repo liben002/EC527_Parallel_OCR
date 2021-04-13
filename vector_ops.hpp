@@ -556,7 +556,7 @@ std::vector<std::valarray<T>> operator-(const std::vector<std::valarray<T>> &A, 
 		C[i] = temp;            // Elementwise substraction
 	}
 
-	printf("Freeing\n");
+	printf("Freeing device memory\n");
 	// Free device global memory
 	err = cudaFree(d_A);
 	if (err != cudaSuccess)
@@ -582,10 +582,14 @@ std::vector<std::valarray<T>> operator-(const std::vector<std::valarray<T>> &A, 
 	}
 	printf("Freed C\n");
 
+	printf("Freeing host memory\n");
 	// Free host memory
 	free(h_A);
+	printf("Freed A\n");
 	free(h_B);
+	printf("Freed B\n");
 	free(h_C);
+	printf("Freed C\n");
 
 	err = cudaDeviceReset();
 
