@@ -646,22 +646,22 @@ std::vector<std::valarray<T>> operator-(const std::vector<std::valarray<T>> &A, 
 	// free(h_C);
 	// // printf("Freed C\n");
 
-	err = cudaFreeHost(d_A);
+	err = cudaFreeHost(h_A);
 	if (err != cudaSuccess)
 	{
-		fprintf(stderr, "Failed to free device matrix (error code: %s)!\n", cudaGetErrorString(err));
+		fprintf(stderr, "Failed to free host matrix (error code: %s)!\n", cudaGetErrorString(err));
 		exit(EXIT_FAILURE);
 	}
-	err = cudaFreeHost(d_B);
+	err = cudaFreeHost(h_B);
 	if (err != cudaSuccess)
 	{
-		fprintf(stderr, "Failed to free device matrix (error code: %s)!\n", cudaGetErrorString(err));
+		fprintf(stderr, "Failed to free host matrix (error code: %s)!\n", cudaGetErrorString(err));
 		exit(EXIT_FAILURE);
 	}
-	err = cudaFreeHost(d_C);
+	err = cudaFreeHost(h_C);
 	if (err != cudaSuccess)
 	{
-		fprintf(stderr, "Failed to free device matrix (error code: %s)!\n", cudaGetErrorString(err));
+		fprintf(stderr, "Failed to free host matrix (error code: %s)!\n", cudaGetErrorString(err));
 		exit(EXIT_FAILURE);
 	}
 
