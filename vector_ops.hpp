@@ -483,9 +483,28 @@ std::vector<std::valarray<T>> operator-(const std::vector<std::valarray<T>> &A, 
 
 	// Allocate host memory
 	// printf("Allocating host vectors.\n");
-	T *h_A = (T *) malloc(mat_size);
-	T *h_B = (T *) malloc(mat_size);
-	T *h_C = (T *) malloc(mat_size);
+	// T *h_A = (T *) cudaHostAlloc(mat_size);
+	// T *h_B = (T *) cudaHostAlloc(mat_size);
+	// T *h_C = (T *) cudaHostAlloc(mat_size);
+
+	err = cudaHostAlloc((void **) &h_A, mat_size);
+	if (err != cudaSuccess)
+	{
+		fprintf(stderr, "Failed to allocate host vector A (error code: %s)!\n", cudaGetErrorString(err));
+		exit(EXIT_FAILURE);
+	}
+	err = cudaHostAlloc((void **) &h_B, mat_size);
+	if (err != cudaSuccess)
+	{
+		fprintf(stderr, "Failed to allocate host vector B (error code: %s)!\n", cudaGetErrorString(err));
+		exit(EXIT_FAILURE);
+	}
+	err = cudaHostAlloc((void **) &h_C, mat_size);
+	if (err != cudaSuccess)
+	{
+		fprintf(stderr, "Failed to allocate host vector C (error code: %s)!\n", cudaGetErrorString(err));
+		exit(EXIT_FAILURE);
+	}
 
 	if (h_A == NULL || h_B == NULL || h_C == NULL)
 	{
