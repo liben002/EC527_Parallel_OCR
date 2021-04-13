@@ -144,10 +144,25 @@ std::vector<std::valarray<T> > operator-(const std::vector<std::valarray<T> > &A
 	printf("Freeing\n");
 	// Free device global memory
 	err = cudaFree(d_A);
+	if (err != cudaSuccess)
+	{
+		fprintf(stderr, "Failed to free device matrix (error code: %s)!\n", cudaGetErrorString(err));
+		exit(EXIT_FAILURE);
+	}
 
 	err = cudaFree(d_B);
+	if (err != cudaSuccess)
+	{
+		fprintf(stderr, "Failed to free device matrix (error code: %s)!\n", cudaGetErrorString(err));
+		exit(EXIT_FAILURE);
+	}
 
 	err = cudaFree(d_C);
+	if (err != cudaSuccess)
+	{
+		fprintf(stderr, "Failed to free device matrix (error code: %s)!\n", cudaGetErrorString(err));
+		exit(EXIT_FAILURE);
+	}
 
 	// Free host memory
 	free(h_A);
