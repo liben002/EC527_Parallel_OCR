@@ -127,7 +127,7 @@ std::vector<std::valarray<T> > operator-(const std::vector<std::valarray<T> > &A
 	printf("h_C contains: \n");
 	for (int i = 0; i < shape_a.first; i++) {
 		for (int j = 0; j < shape_a.second; j++) {
-			printf("%d ", h_C[i*shape_a.first + j]);
+			printf("%d ", h_C[i*shape_a.second + j]);
 		}
 		printf("\n");
 	}
@@ -136,7 +136,7 @@ std::vector<std::valarray<T> > operator-(const std::vector<std::valarray<T> > &A
 	for (size_t i = 0; i < shape_a.first; i++) {  // For every row
 		std::valarray<T> temp(1,shape_a.second);
 		for (size_t j = 0; j < shape_a.second; j++) {
-			temp[j] = h_C[i*shape_a.first + j];
+			temp[j] = h_C[i*shape_a.second + j];
 		}
 		C[i] = temp;            // Elementwise substraction
 	}
