@@ -471,6 +471,8 @@ std::vector<std::valarray<T>> operator-(const std::vector<std::valarray<T>> &A, 
 		std::exit(EXIT_FAILURE);
 	}
 
+	printf("vector length: valarray length: ", A.size(), A[0].size());
+
 	// Error code to check return values for CUDA calls
 	cudaError_t err = cudaSuccess;
 
