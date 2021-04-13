@@ -472,7 +472,7 @@ std::vector<std::valarray<T>> operator-(const std::vector<std::valarray<T>> &A, 
 	}
 
 	printf("HERE\n");
-	printf("vector length: valarray length: \n", A.size(), A[0].size());
+	printf("vector length: %d valarray length: %d \n", A.size(), A[0].size());
 
 	// Error code to check return values for CUDA calls
 	cudaError_t err = cudaSuccess;
