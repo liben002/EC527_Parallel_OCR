@@ -184,7 +184,7 @@ int main() {
 
 	std::vector<std::valarray<int> > A, B, C;
 
-	for (int i = 0 ; i < 4; i++) {
+	for (int i = 0 ; i < 8; i++) {
 		std::valarray<int> temp1(1,4);
 		std::valarray<int> temp2(1,4);
 		for (int i = 0; i < 4; i++) {
