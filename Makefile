@@ -1,5 +1,3 @@
-serial:
-	g++ example_usage.cpp -std=c++11 -lrt -lm -o example_usage
+cuda:
+	nvcc -arch compute_35 -code sm_35 -std=c++11 example_usage.cu -o example_usage.out
 
-parallel:
-	g++ example_usage.cpp -std=c++11 -fopenmp -lrt -lm -o example_usage
