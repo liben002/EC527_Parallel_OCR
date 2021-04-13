@@ -12,7 +12,7 @@
 static void test() {
 	// Creating network with 3 layers for "iris.csv"
 	// First layer neurons must match testing params
-	machine_learning::neural_network::NeuralNetwork myNN = machine_learning::neural_network::NeuralNetwork({ {4, "none"}, {10, "relu"}, {10, "sigmoid"} });
+	machine_learning::neural_network::NeuralNetwork myNN = machine_learning::neural_network::NeuralNetwork({ {4, "none"}, {100, "relu"}, {100, "sigmoid"} });
 
 	// Printing summary of model
 	myNN.summary();
