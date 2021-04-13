@@ -5,11 +5,12 @@
 #include <omp.h>
 
 #define EPOCHS 100
+#define THREADS 4
 
 void detect_threads_setting()
 {
 	long int i, ognt;
-	char * env_ONT;
+	// char * env_ONT;
 
 	//Find out how many threads OpenMP thinks it is wants to use
 	#pragma omp parallel for
