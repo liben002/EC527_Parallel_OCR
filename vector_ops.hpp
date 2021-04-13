@@ -623,13 +623,12 @@ std::vector<std::valarray<T>> operator-(const std::vector<std::valarray<T>> &A, 
 	free(h_C);
 	// printf("Freed C\n");
 
-	err = cudaDeviceReset();
-
-	if (err != cudaSuccess)
-	{
-		fprintf(stderr, "Failed to allocate device vector A (error code: %s)!\n", cudaGetErrorString(err));
-		exit(EXIT_FAILURE);
-	}
+	// err = cudaDeviceReset();
+	// if (err != cudaSuccess)
+	// {
+	// 	fprintf(stderr, "Failed to allocate device vector A (error code: %s)!\n", cudaGetErrorString(err));
+	// 	exit(EXIT_FAILURE);
+	// }
 
 	// std::vector<std::valarray<T>> C(shape_a.first);         // Vector to store result
 	// for (size_t i = 0; i < A.size(); i++) {  // For every row
