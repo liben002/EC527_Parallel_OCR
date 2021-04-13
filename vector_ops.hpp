@@ -526,7 +526,7 @@ std::vector<std::valarray<T>> operator-(const std::vector<std::valarray<T>> &A, 
 
 	dim3 dimBlock(8, 8);
 	dim3 dimGrid(4, 4);
-	printf("Launching CUDA kernel with %d blocks and %d threads.\n", 4, 4 * 4);
+	printf("Launching CUDA kernel with %d blocks and %d threads.\n", 16, 8 * 8);
 
 	CUDA_MAT_SUBT<<<dimGrid, dimBlock>>>(d_A, d_B, d_C, shape_a.first, shape_a.second);
 
@@ -559,10 +559,25 @@ std::vector<std::valarray<T>> operator-(const std::vector<std::valarray<T>> &A, 
 	printf("Freeing\n");
 	// Free device global memory
 	err = cudaFree(d_A);
+	if (err != cudaSuccess)
+	{
+		fprintf(stderr, "Failed to free device matrix (error code: %s)!\n", cudaGetErrorString(err));
+		exit(EXIT_FAILURE);
+	}
 
 	err = cudaFree(d_B);
+	if (err != cudaSuccess)
+	{
+		fprintf(stderr, "Failed to free device matrix (error code: %s)!\n", cudaGetErrorString(err));
+		exit(EXIT_FAILURE);
+	}
 
 	err = cudaFree(d_C);
+	if (err != cudaSuccess)
+	{
+		fprintf(stderr, "Failed to free device matrix (error code: %s)!\n", cudaGetErrorString(err));
+		exit(EXIT_FAILURE);
+	}
 
 	// Free host memory
 	free(h_A);
