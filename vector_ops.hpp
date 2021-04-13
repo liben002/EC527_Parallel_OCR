@@ -471,8 +471,8 @@ std::vector<std::valarray<T>> operator-(const std::vector<std::valarray<T>> &A, 
 		std::exit(EXIT_FAILURE);
 	}
 
-	printf("HERE\n");
-	printf("vector length: %d valarray length: %d \n", A.size(), A[0].size());
+	// printf("HERE\n");
+	// printf("vector length: %d valarray length: %d \n", A.size(), A[0].size());
 
 	// Error code to check return values for CUDA calls
 	cudaError_t err = cudaSuccess;
@@ -494,13 +494,13 @@ std::vector<std::valarray<T>> operator-(const std::vector<std::valarray<T>> &A, 
 
 	for (int i = 0; i < shape_a.first; i++) {
 		for (int j = 0; j < shape_a.second; j++) {
-			h_A[i*shape_a.first + j] = A[i][j];
+			h_A[i*shape_a.second + j] = A[i][j];
 		}
 	}
 
 	for (int i = 0; i < shape_a.first; i++) {
 		for (int j = 0; j < shape_a.second; j++) {
-			h_B[i*shape_a.first + j] = B[i][j];
+			h_B[i*shape_a.second + j] = B[i][j];
 		}
 	}
 
@@ -550,8 +550,8 @@ std::vector<std::valarray<T>> operator-(const std::vector<std::valarray<T>> &A, 
 	err = cudaMemcpy(d_A, h_A, mat_size, cudaMemcpyHostToDevice);
 	err = cudaMemcpy(d_B, h_B, mat_size, cudaMemcpyHostToDevice);
 
-	dim3 dimBlock(6, 3);
-	dim3 dimGrid(10, 10);
+	dim3 dimBlock(8, 8);
+	dim3 dimGrid(4, 4);
 	// printf("Launching CUDA kernel with %d blocks and %d threads.\n", 16, 8 * 8);
 
 	CUDA_MAT_SUBT<<<dimGrid, dimBlock>>>(d_A, d_B, d_C, shape_a.first, shape_a.second);
@@ -585,7 +585,7 @@ std::vector<std::valarray<T>> operator-(const std::vector<std::valarray<T>> &A, 
 	for (size_t i = 0; i < shape_a.first; i++) {  // For every row
 		std::valarray<T> temp(1,shape_a.second);
 		for (size_t j = 0; j < shape_a.second; j++) {
-			temp[j] = h_C[i*shape_a.first + j];
+			temp[j] = h_C[i*shape_a.second + j];
 		}
 		C[i] = temp;            // Elementwise substraction
 	}
