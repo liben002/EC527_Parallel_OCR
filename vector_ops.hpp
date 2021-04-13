@@ -485,6 +485,8 @@ std::vector<std::valarray<T>> operator-(const std::vector<std::valarray<T>> &A, 
 	// Error code to check return values for CUDA calls
 	cudaError_t err = cudaSuccess;
 
+	size_t mat_size = shape_a.first * shape_a.second * sizeof(T);
+
 	// Allocate host memory
 	printf("Allocating host vectors.\n");
 	T *h_A = (T *) malloc(mat_size);
