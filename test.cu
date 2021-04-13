@@ -60,19 +60,19 @@ std::vector<std::valarray<T> > operator-(const std::vector<std::valarray<T> > &A
 
 	for (int i = 0; i < shape_a.first; i++) {
 		for (int j = 0; j < shape_a.second; j++) {
-			h_A[i*shape_a.first + j] = A[i][j];
+			h_A[i*shape_a.second + j] = A[i][j];
 		}
 	}
 
 	for (int i = 0; i < shape_a.first; i++) {
 		for (int j = 0; j < shape_a.second; j++) {
-			h_B[i*shape_a.first + j] = B[i][j];
+			h_B[i*shape_a.second + j] = B[i][j];
 		}
 	}
 
 	for (int i = 0; i < shape_a.first; i++) {
 		for (int j = 0; j < shape_a.second; j++) {
-			h_C[i*shape_a.first + j] = B[i][j];
+			h_C[i*shape_a.second + j] = B[i][j];
 		}
 	}
 
