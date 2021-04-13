@@ -7,6 +7,21 @@
 #define EPOCHS 100
 #define THREADS 4
 
+int clock_gettime(clockid_t clk_id, struct timespec *tp);
+
+double interval(struct timespec start, struct timespec end)
+{
+	struct timespec temp;
+	temp.tv_sec = end.tv_sec - start.tv_sec;
+	temp.tv_nsec = end.tv_nsec - start.tv_nsec;
+	if (temp.tv_nsec < 0)
+	{
+		temp.tv_sec = temp.tv_sec - 1;
+		temp.tv_nsec = temp.tv_nsec + 1000000000;
+	}
+	return (((double)temp.tv_sec) + ((double)temp.tv_nsec)*1.0e-9);
+}
+
 void detect_threads_setting()
 {
 	long int i, ognt;
@@ -46,7 +61,7 @@ void detect_threads_setting()
 static void test() {
 	// Creating network with 3 layers for "iris.csv"
 	// First layer neurons must match testing params
-	machine_learning::neural_network::NeuralNetwork myNN = machine_learning::neural_network::NeuralNetwork({ {4, "none"}, {1200, "relu"}, {1200, "sigmoid"} });
+	machine_learning::neural_network::NeuralNetwork myNN = machine_learning::neural_network::NeuralNetwork({ {4, "none"}, {600, "relu"}, {300, "sigmoid"} });
 
 	// Printing summary of model
 	myNN.summary();
@@ -68,14 +83,18 @@ static void test() {
  */
 int main() {
 
+	// struct timespec time_start_CPU, time_end_CPU;
+
 	detect_threads_setting();
 
 	// start the timer
+	// clock_gettime(CLOCK_PROCESS_CPUTIME_ID, &time_start_CPU);
 	auto start = std::chrono::high_resolution_clock::now();  // Start clock
 
 	test();
 
 	// stop the timer
+	// clock_gettime(CLOCK_PROCESS_CPUTIME_ID, &time_end_CPU);
 	auto stop = std::chrono::high_resolution_clock::now();  // Stoping the clock
 	auto duration = std::chrono::duration_cast<std::chrono::microseconds>(stop - start);
 
