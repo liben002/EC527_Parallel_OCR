@@ -520,7 +520,7 @@ std::vector<std::valarray<T>> operator-(const std::vector<std::valarray<T>> &A, 
 		exit(EXIT_FAILURE);
 	}
 
-	printf ("Copying host vectors to CUDA device vectors\n");
+	printf("Copying host vectors to CUDA device vectors\n");
 	err = cudaMemcpy(d_A, h_A, mat_size, cudaMemcpyHostToDevice);
 	err = cudaMemcpy(d_B, h_B, mat_size, cudaMemcpyHostToDevice);
 
