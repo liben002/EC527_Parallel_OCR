@@ -487,6 +487,10 @@ std::vector<std::valarray<T>> operator-(const std::vector<std::valarray<T>> &A, 
 	// T *h_B = (T *) cudaHostAlloc(mat_size);
 	// T *h_C = (T *) cudaHostAlloc(mat_size);
 
+	T *h_A = NULL;
+	T *h_B = NULL;
+	T *h_C = NULL;
+
 	err = cudaHostAlloc((void **) &h_A, mat_size, cudaHostAllocWriteCombined | cudaHostAllocMapped);
 	if (err != cudaSuccess)
 	{
