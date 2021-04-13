@@ -16,6 +16,9 @@
 #include <random>
 #include <valarray>
 #include <vector>
+#include <cuda_runtime_api.h>
+#include <cuda.h>
+
 
 template <typename T>
 __global__ void CUDA_MAT_SUBT(T *d_A, T *d_B, T *d_C, int row_len, int col_len)
