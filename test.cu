@@ -177,11 +177,6 @@ std::vector<std::valarray<T> > operator-(const std::vector<std::valarray<T> > &A
 		exit(EXIT_FAILURE);
 	}
 
-	// std::vector<std::valarray<T> > C;         // Vector to store result
-	// for (int i = 0; i < A.size(); i++) {  // For every row
-	// 	C.push_back(A[i] - B[i]);            // Elementwise substraction
-	// }
-
 	return C;  // Return new resultant 2D vector
 }
 
@@ -203,7 +198,7 @@ int main() {
 	C = A - B;
 
 	printf("Correct value: \n");
-	for (int i = 0 ; i < 4; i ++) {
+	for (int i = 0 ; i < 8; i ++) {
 		for (int j = 0; j < 4; j++) {
 			printf("%d ", C[i][j]);
 		}
