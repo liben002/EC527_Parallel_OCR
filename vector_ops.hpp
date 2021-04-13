@@ -483,6 +483,12 @@ std::vector<std::valarray<T>> operator-(const std::vector<std::valarray<T>> &A, 
 	T *h_B = (T *) malloc(mat_size);
 	T *h_C = (T *) malloc(mat_size);
 
+	if (h_A == NULL || h_B == NULL || h_C == NULL)
+	{
+		fprintf(stderr, "Failed to allocate host vectors\n");
+		exit(EXIT_FAILURE);
+	}
+
 	for (int i = 0; i < shape_a.first; i++) {
 		for (int j = 0; j < shape_a.second; j++) {
 			h_A[i*shape_a.first + j] = A[i][j];
@@ -495,22 +501,22 @@ std::vector<std::valarray<T>> operator-(const std::vector<std::valarray<T>> &A, 
 		}
 	}
 
-	printf("h_A contains: \n");
-	for (int i = 0; i < shape_a.first; i++) {
-		for (int j = 0; j < shape_a.second; j++) {
-			printf("%.2f ", h_A[i*shape_a.first + j]);
-		}
-		printf("\n");
-	}
-	printf("\n");
+	// printf("h_A contains: \n");
+	// for (int i = 0; i < shape_a.first; i++) {
+	// 	for (int j = 0; j < shape_a.second; j++) {
+	// 		printf("%.2f ", h_A[i*shape_a.first + j]);
+	// 	}
+	// 	printf("\n");
+	// }
+	// printf("\n");
 
-	printf("h_B contains: \n");
-	for (int i = 0; i < shape_a.first; i++) {
-		for (int j = 0; j < shape_a.second; j++) {
-			printf("%.2f ", h_B[i*shape_a.first + j]);
-		}
-		printf("\n");
-	}
+	// printf("h_B contains: \n");
+	// for (int i = 0; i < shape_a.first; i++) {
+	// 	for (int j = 0; j < shape_a.second; j++) {
+	// 		printf("%.2f ", h_B[i*shape_a.first + j]);
+	// 	}
+	// 	printf("\n");
+	// }
 
 	// Allocate device vector
 	printf("Allocating device vectors.\n");
@@ -564,13 +570,13 @@ std::vector<std::valarray<T>> operator-(const std::vector<std::valarray<T>> &A, 
 		exit(EXIT_FAILURE);
 	}
 
-	printf("h_C contains: \n");
-	for (int i = 0; i < shape_a.first; i++) {
-		for (int j = 0; j < shape_a.second; j++) {
-			printf("%.2f ", h_C[i*shape_a.first + j]);
-		}
-		printf("\n");
-	}
+	// printf("h_C contains: \n");
+	// for (int i = 0; i < shape_a.first; i++) {
+	// 	for (int j = 0; j < shape_a.second; j++) {
+	// 		printf("%.2f ", h_C[i*shape_a.first + j]);
+	// 	}
+	// 	printf("\n");
+	// }
 
 	std::vector<std::valarray<T>> C(shape_a.first);         // Vector to store result
 	for (size_t i = 0; i < shape_a.first; i++) {  // For every row
