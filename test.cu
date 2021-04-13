@@ -70,6 +70,12 @@ std::vector<std::valarray<T> > operator-(const std::vector<std::valarray<T> > &A
 		}
 	}
 
+	for (int i = 0; i < shape_a.first; i++) {
+		for (int j = 0; j < shape_a.second; j++) {
+			h_C[i*shape_a.first + j] = B[i][j];
+		}
+	}
+
 	printf("h_A contains: \n");
 	for (int i = 0; i < shape_a.first; i++) {
 		for (int j = 0; j < shape_a.second; j++) {
@@ -100,6 +106,7 @@ std::vector<std::valarray<T> > operator-(const std::vector<std::valarray<T> > &A
 	printf ("Copying host vectors to CUDA device vectors\n");
 	err = cudaMemcpy(d_A, h_A, mat_size, cudaMemcpyHostToDevice);
 	err = cudaMemcpy(d_B, h_B, mat_size, cudaMemcpyHostToDevice);
+	err = cudaMemcpy(d_C, h_C, mat_size, cudaMemcpyHostToDevice);
 
 	dim3 dimBlock(8, 8);
 	dim3 dimGrid(4, 4);
