@@ -19,6 +19,7 @@
 #include <cuda_runtime_api.h>
 #include <cuda.h>
 #include "cuda_ops.cu"
+#include <omp.h>
 
 /**
  * @namespace machine_learning
@@ -492,14 +493,10 @@ std::vector<std::valarray<T>> operator-(const std::vector<std::valarray<T>> &A, 
 		exit(EXIT_FAILURE);
 	}
 
+	#pragma omp parallel for collapse(2)
 	for (int i = 0; i < shape_a.first; i++) {
 		for (int j = 0; j < shape_a.second; j++) {
 			h_A[i*shape_a.second + j] = A[i][j];
-		}
-	}
-
-	for (int i = 0; i < shape_a.first; i++) {
-		for (int j = 0; j < shape_a.second; j++) {
 			h_B[i*shape_a.second + j] = B[i][j];
 		}
 	}
@@ -584,6 +581,7 @@ std::vector<std::valarray<T>> operator-(const std::vector<std::valarray<T>> &A, 
 	std::vector<std::valarray<T>> C(shape_a.first);         // Vector to store result
 	for (size_t i = 0; i < shape_a.first; i++) {  // For every row
 		std::valarray<T> temp(1,shape_a.second);
+		#pragma omp parallel for
 		for (size_t j = 0; j < shape_a.second; j++) {
 			temp[j] = h_C[i*shape_a.second + j];
 		}
