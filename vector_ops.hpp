@@ -564,6 +564,7 @@ std::vector<std::valarray<T>> operator-(const std::vector<std::valarray<T>> &A, 
 		fprintf(stderr, "Failed to free device matrix (error code: %s)!\n", cudaGetErrorString(err));
 		exit(EXIT_FAILURE);
 	}
+	printf("Freed A\n");
 
 	err = cudaFree(d_B);
 	if (err != cudaSuccess)
@@ -571,6 +572,7 @@ std::vector<std::valarray<T>> operator-(const std::vector<std::valarray<T>> &A, 
 		fprintf(stderr, "Failed to free device matrix (error code: %s)!\n", cudaGetErrorString(err));
 		exit(EXIT_FAILURE);
 	}
+	printf("Freed B\n");
 
 	err = cudaFree(d_C);
 	if (err != cudaSuccess)
@@ -578,6 +580,7 @@ std::vector<std::valarray<T>> operator-(const std::vector<std::valarray<T>> &A, 
 		fprintf(stderr, "Failed to free device matrix (error code: %s)!\n", cudaGetErrorString(err));
 		exit(EXIT_FAILURE);
 	}
+	printf("Freed C\n");
 
 	// Free host memory
 	free(h_A);
