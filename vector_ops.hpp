@@ -478,7 +478,7 @@ std::vector<std::valarray<T>> operator-(const std::vector<std::valarray<T>> &A, 
 	cudaError_t err = cudaSuccess;
 
 	size_t mat_size = shape_a.first * shape_a.second * sizeof(T);
-	// printf("Matrix dimensions: %d x %d, Size of matrix in bytes: %d\n", shape_a.first, shape_a.second, mat_size);
+	printf("Matrix dimensions: %d x %d, Size of matrix in bytes: %d\n", shape_a.first, shape_a.second, mat_size);
 
 	// Allocate host memory
 	// printf("Allocating host vectors.\n");
