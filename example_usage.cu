@@ -46,7 +46,7 @@ void detect_threads_setting()
 static void test() {
 	// Creating network with 3 layers for "iris.csv"
 	// First layer neurons must match testing params
-	machine_learning::neural_network::NeuralNetwork myNN = machine_learning::neural_network::NeuralNetwork({ {4, "none"}, {60, "relu"}, {30, "sigmoid"} });
+	machine_learning::neural_network::NeuralNetwork myNN = machine_learning::neural_network::NeuralNetwork({ {4, "none"}, {600, "relu"}, {300, "sigmoid"} });
 
 	// Printing summary of model
 	myNN.summary();
