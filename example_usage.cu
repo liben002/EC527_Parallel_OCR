@@ -5,20 +5,20 @@
 
 #define EPOCHS 100
 
-int clock_gettime(clockid_t clk_id, struct timespec *tp);
+// int clock_gettime(clockid_t clk_id, struct timespec *tp);
 
-double interval(struct timespec start, struct timespec end)
-{
-	struct timespec temp;
-	temp.tv_sec = end.tv_sec - start.tv_sec;
-	temp.tv_nsec = end.tv_nsec - start.tv_nsec;
-	if (temp.tv_nsec < 0)
-	{
-		temp.tv_sec = temp.tv_sec - 1;
-		temp.tv_nsec = temp.tv_nsec + 1000000000;
-	}
-	return (((double)temp.tv_sec) + ((double)temp.tv_nsec)*1.0e-9);
-}
+// double interval(struct timespec start, struct timespec end)
+// {
+// 	struct timespec temp;
+// 	temp.tv_sec = end.tv_sec - start.tv_sec;
+// 	temp.tv_nsec = end.tv_nsec - start.tv_nsec;
+// 	if (temp.tv_nsec < 0)
+// 	{
+// 		temp.tv_sec = temp.tv_sec - 1;
+// 		temp.tv_nsec = temp.tv_nsec + 1000000000;
+// 	}
+// 	return (((double)temp.tv_sec) + ((double)temp.tv_nsec)*1.0e-9);
+// }
 
 /**
  * Function to test neural network
@@ -52,13 +52,14 @@ int main() {
 	struct timespec time_start_CPU, time_end_CPU;
 
 	// start the timer
-	clock_gettime(CLOCK_PROCESS_CPUTIME_ID, &time_start_CPU);
+	auto start = std::chrono::high_resolution_clock::now();  // Start clock
 
 	test();
 
 	// stop the timer
-	clock_gettime(CLOCK_PROCESS_CPUTIME_ID, &time_end_CPU);
+	auto stop = std::chrono::high_resolution_clock::now();  // Stoping the clock
+	auto duration = std::chrono::duration_cast<std::chrono::microseconds>(stop - start);
 
-	printf("Time for learning over %d epochs: %f seconds\n", EPOCHS, interval(time_start_CPU, time_end_CPU));
+	printf("Time for learning over %d epochs: %f seconds\n", EPOCHS, duration.count() / 1e6);
 	return 0;
 }
