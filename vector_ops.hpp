@@ -475,10 +475,10 @@ std::vector<std::valarray<T>> operator-(const std::vector<std::valarray<T>> &A, 
 	cudaError_t err = cudaSuccess;
 
 	size_t mat_size = shape_a.first * shape_a.second * sizeof(T);
-	printf("Matrix dimensions: %d x %d, Size of matrix in bytes: %d\n", shape_a.first, shape_a.second, mat_size);
+	// printf("Matrix dimensions: %d x %d, Size of matrix in bytes: %d\n", shape_a.first, shape_a.second, mat_size);
 
 	// Allocate host memory
-	printf("Allocating host vectors.\n");
+	// printf("Allocating host vectors.\n");
 	T *h_A = (T *) malloc(mat_size);
 	T *h_B = (T *) malloc(mat_size);
 	T *h_C = (T *) malloc(mat_size);
@@ -519,7 +519,7 @@ std::vector<std::valarray<T>> operator-(const std::vector<std::valarray<T>> &A, 
 	// }
 
 	// Allocate device vector
-	printf("Allocating device vectors.\n");
+	// printf("Allocating device vectors.\n");
 	T *d_A = NULL;
 	T *d_B = NULL;
 	T *d_C = NULL;
@@ -543,13 +543,13 @@ std::vector<std::valarray<T>> operator-(const std::vector<std::valarray<T>> &A, 
 		exit(EXIT_FAILURE);
 	}
 
-	printf("Copying host vectors to CUDA device vectors\n");
+	// printf("Copying host vectors to CUDA device vectors\n");
 	err = cudaMemcpy(d_A, h_A, mat_size, cudaMemcpyHostToDevice);
 	err = cudaMemcpy(d_B, h_B, mat_size, cudaMemcpyHostToDevice);
 
 	dim3 dimBlock(6, 3);
 	dim3 dimGrid(10, 10);
-	printf("Launching CUDA kernel with %d blocks and %d threads.\n", 16, 8 * 8);
+	// printf("Launching CUDA kernel with %d blocks and %d threads.\n", 16, 8 * 8);
 
 	CUDA_MAT_SUBT<<<dimGrid, dimBlock>>>(d_A, d_B, d_C, shape_a.first, shape_a.second);
 
@@ -561,7 +561,7 @@ std::vector<std::valarray<T>> operator-(const std::vector<std::valarray<T>> &A, 
 		exit(EXIT_FAILURE);
 	}
 
-	printf("Copy output data from CUDA device to the host memory\n");
+	// printf("Copy output data from CUDA device to the host memory\n");
 	err = cudaMemcpy(h_C, d_C, mat_size, cudaMemcpyDeviceToHost);
 
 	if (err != cudaSuccess)
@@ -587,7 +587,7 @@ std::vector<std::valarray<T>> operator-(const std::vector<std::valarray<T>> &A, 
 		C[i] = temp;            // Elementwise substraction
 	}
 
-	printf("Freeing device memory\n");
+	// printf("Freeing device memory\n");
 	// Free device global memory
 	err = cudaFree(d_A);
 	if (err != cudaSuccess)
@@ -595,7 +595,7 @@ std::vector<std::valarray<T>> operator-(const std::vector<std::valarray<T>> &A, 
 		fprintf(stderr, "Failed to free device matrix (error code: %s)!\n", cudaGetErrorString(err));
 		exit(EXIT_FAILURE);
 	}
-	printf("Freed A\n");
+	// printf("Freed A\n");
 
 	err = cudaFree(d_B);
 	if (err != cudaSuccess)
@@ -603,7 +603,7 @@ std::vector<std::valarray<T>> operator-(const std::vector<std::valarray<T>> &A, 
 		fprintf(stderr, "Failed to free device matrix (error code: %s)!\n", cudaGetErrorString(err));
 		exit(EXIT_FAILURE);
 	}
-	printf("Freed B\n");
+	// printf("Freed B\n");
 
 	err = cudaFree(d_C);
 	if (err != cudaSuccess)
@@ -611,16 +611,16 @@ std::vector<std::valarray<T>> operator-(const std::vector<std::valarray<T>> &A, 
 		fprintf(stderr, "Failed to free device matrix (error code: %s)!\n", cudaGetErrorString(err));
 		exit(EXIT_FAILURE);
 	}
-	printf("Freed C\n");
+	// printf("Freed C\n");
 
-	printf("Freeing host memory\n");
+	// printf("Freeing host memory\n");
 	// Free host memory
 	free(h_A);
-	printf("Freed A\n");
+	// printf("Freed A\n");
 	free(h_B);
-	printf("Freed B\n");
+	// printf("Freed B\n");
 	free(h_C);
-	printf("Freed C\n");
+	// printf("Freed C\n");
 
 	err = cudaDeviceReset();
 
