@@ -101,8 +101,8 @@ std::vector<std::valarray<T> > operator-(const std::vector<std::valarray<T> > &A
 	err = cudaMemcpy(d_A, h_A, mat_size, cudaMemcpyHostToDevice);
 	err = cudaMemcpy(d_B, h_B, mat_size, cudaMemcpyHostToDevice);
 
-	dim3 dimBlock(8, 4);
-	dim3 dimGrid(1, 1);
+	dim3 dimBlock(8, 8);
+	dim3 dimGrid(4, 4);
 	printf("Launching CUDA kernel with %d blocks and %d threads.\n", 4, 4 * 4);
 
 	CUDA_MAT_SUBT<<<dimGrid, dimBlock>>>(d_A, d_B, d_C, shape_a.first, shape_a.second);
