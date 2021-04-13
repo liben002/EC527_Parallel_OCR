@@ -495,6 +495,23 @@ std::vector<std::valarray<T>> operator-(const std::vector<std::valarray<T>> &A, 
 		}
 	}
 
+	printf("h_A contains: \n");
+	for (int i = 0; i < shape_a.first; i++) {
+		for (int j = 0; j < shape_a.second; j++) {
+			printf("%d ", h_A[i*shape_a.first + j]);
+		}
+		printf("\n");
+	}
+	printf("\n");
+
+	printf("h_B contains: \n");
+	for (int i = 0; i < shape_a.first; i++) {
+		for (int j = 0; j < shape_a.second; j++) {
+			printf("%d ", h_B[i*shape_a.first + j]);
+		}
+		printf("\n");
+	}
+
 	// Allocate device vector
 	printf("Allocating device vectors.\n");
 	T *d_A = NULL;
@@ -545,6 +562,14 @@ std::vector<std::valarray<T>> operator-(const std::vector<std::valarray<T>> &A, 
 	{
 		fprintf(stderr, "Failed to copy matrix from device to host (error code: %s)!\n", cudaGetErrorString(err));
 		exit(EXIT_FAILURE);
+	}
+
+	printf("h_C contains: \n");
+	for (int i = 0; i < shape_a.first; i++) {
+		for (int j = 0; j < shape_a.second; j++) {
+			printf("%d ", h_C[i*shape_a.first + j]);
+		}
+		printf("\n");
 	}
 
 	std::vector<std::valarray<T>> C(shape_a.first);         // Vector to store result
