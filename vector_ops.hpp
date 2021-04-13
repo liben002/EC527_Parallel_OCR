@@ -483,32 +483,32 @@ std::vector<std::valarray<T>> operator-(const std::vector<std::valarray<T>> &A, 
 
 	// Allocate host memory
 	// printf("Allocating host vectors.\n");
-	T *h_A = (T *) malloc(mat_size);
-	T *h_B = (T *) malloc(mat_size);
-	T *h_C = (T *) malloc(mat_size);
+	// T *h_A = (T *) malloc(mat_size);
+	// T *h_B = (T *) malloc(mat_size);
+	// T *h_C = (T *) malloc(mat_size);
 
-	// T *h_A = NULL;
-	// T *h_B = NULL;
-	// T *h_C = NULL;
+	T *h_A = NULL;
+	T *h_B = NULL;
+	T *h_C = NULL;
 
-	// err = cudaMallocHost((void **) &h_A, mat_size);
-	// if (err != cudaSuccess)
-	// {
-	// 	fprintf(stderr, "Failed to allocate host vector A (error code: %s)!\n", cudaGetErrorString(err));
-	// 	exit(EXIT_FAILURE);
-	// }
-	// err = cudaMallocHost((void **) &h_B, mat_size);
-	// if (err != cudaSuccess)
-	// {
-	// 	fprintf(stderr, "Failed to allocate host vector B (error code: %s)!\n", cudaGetErrorString(err));
-	// 	exit(EXIT_FAILURE);
-	// }
-	// err = cudaMallocHost((void **) &h_C, mat_size);
-	// if (err != cudaSuccess)
-	// {
-	// 	fprintf(stderr, "Failed to allocate host vector C (error code: %s)!\n", cudaGetErrorString(err));
-	// 	exit(EXIT_FAILURE);
-	// }
+	err = cudaHostAlloc((void **) &h_A, mat_size, cudaHostAllocDefault);
+	if (err != cudaSuccess)
+	{
+		fprintf(stderr, "Failed to allocate host vector A (error code: %s)!\n", cudaGetErrorString(err));
+		exit(EXIT_FAILURE);
+	}
+	err = cudaHostAlloc((void **) &h_B, mat_size, cudaHostAllocDefault);
+	if (err != cudaSuccess)
+	{
+		fprintf(stderr, "Failed to allocate host vector B (error code: %s)!\n", cudaGetErrorString(err));
+		exit(EXIT_FAILURE);
+	}
+	err = cudaHostAlloc((void **) &h_C, mat_size, cudaHostAllocDefault);
+	if (err != cudaSuccess)
+	{
+		fprintf(stderr, "Failed to allocate host vector C (error code: %s)!\n", cudaGetErrorString(err));
+		exit(EXIT_FAILURE);
+	}
 
 	if (h_A == NULL || h_B == NULL || h_C == NULL)
 	{
@@ -637,14 +637,33 @@ std::vector<std::valarray<T>> operator-(const std::vector<std::valarray<T>> &A, 
 	}
 	// printf("Freed C\n");
 
-	// printf("Freeing host memory\n");
-	// Free host memory
-	free(h_A);
-	// printf("Freed A\n");
-	free(h_B);
-	// printf("Freed B\n");
-	free(h_C);
-	// printf("Freed C\n");
+	// // printf("Freeing host memory\n");
+	// // Free host memory
+	// free(h_A);
+	// // printf("Freed A\n");
+	// free(h_B);
+	// // printf("Freed B\n");
+	// free(h_C);
+	// // printf("Freed C\n");
+
+	err = cudaFreeHost(d_A);
+	if (err != cudaSuccess)
+	{
+		fprintf(stderr, "Failed to free device matrix (error code: %s)!\n", cudaGetErrorString(err));
+		exit(EXIT_FAILURE);
+	}
+	err = cudaFreeHost(d_B);
+	if (err != cudaSuccess)
+	{
+		fprintf(stderr, "Failed to free device matrix (error code: %s)!\n", cudaGetErrorString(err));
+		exit(EXIT_FAILURE);
+	}
+	err = cudaFreeHost(d_C);
+	if (err != cudaSuccess)
+	{
+		fprintf(stderr, "Failed to free device matrix (error code: %s)!\n", cudaGetErrorString(err));
+		exit(EXIT_FAILURE);
+	}
 
 	// err = cudaDeviceReset();
 	// if (err != cudaSuccess)
