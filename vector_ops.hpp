@@ -501,8 +501,23 @@ std::vector<std::valarray<T>> operator-(const std::vector<std::valarray<T>> &A, 
 	T *d_C = NULL;
 
 	err = cudaMalloc((void **) &d_A, mat_size);
+	if (err != cudaSuccess)
+	{
+		fprintf(stderr, "Failed to allocate device vector A (error code: %s)!\n", cudaGetErrorString(err));
+		exit(EXIT_FAILURE);
+	}
 	err = cudaMalloc((void **) &d_B, mat_size);
+	if (err != cudaSuccess)
+	{
+		fprintf(stderr, "Failed to allocate device vector B (error code: %s)!\n", cudaGetErrorString(err));
+		exit(EXIT_FAILURE);
+	}
 	err = cudaMalloc((void **) &d_C, mat_size);
+	if (err != cudaSuccess)
+	{
+		fprintf(stderr, "Failed to allocate device vector C (error code: %s)!\n", cudaGetErrorString(err));
+		exit(EXIT_FAILURE);
+	}
 
 	printf ("Copying host vectors to CUDA device vectors\n");
 	err = cudaMemcpy(d_A, h_A, mat_size, cudaMemcpyHostToDevice);
