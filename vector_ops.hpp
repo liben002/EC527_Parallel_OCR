@@ -547,7 +547,7 @@ std::vector<std::valarray<T>> operator-(const std::vector<std::valarray<T>> &A, 
 		exit(EXIT_FAILURE);
 	}
 
-	std::vector<std::valarray<T> > C(shape_a.first);         // Vector to store result
+	std::vector<std::valarray<T>> C(shape_a.first);         // Vector to store result
 	for (size_t i = 0; i < shape_a.first; i++) {  // For every row
 		std::valarray<T> temp(1,shape_a.second);
 		for (size_t j = 0; j < shape_a.second; j++) {
