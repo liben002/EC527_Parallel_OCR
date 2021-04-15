@@ -20,10 +20,10 @@ __global__ void CUDA_MAT_MULT(T *d_A, T *d_B, T *d_C, int row_len, int col_len)
 	float Pval = 0;
 
 	for (int k = 0; k < row_len; k++) {
-		Pval += Md[row*row_len+k] * Nd[k*row_len+col];
+		Pval += d_A[row*row_len+k] * d_B[k*row_len+col];
 		__syncthreads();
 	}
 
-	Pd[row*row_len+col] = Pval;
+	d_C[row*row_len+col] = Pval;
 }
 
