@@ -23,7 +23,7 @@
 #define _TILED 1
 #define TILE_DIM 16
 
-#define _DEBUG 1
+#define _DEBUG 0
 
 /**
  * @namespace machine_learning
@@ -538,49 +538,44 @@ std::vector<std::valarray<T>> multiply(const std::vector<std::valarray<T>> &A, c
 		}
 	}
 
-	// for (int i = 0; i < shape_a.first; i++) {
-	// 	for (int j = 0; j < shape_b.second; j++) {
-	// 		h_C[i*shape_b.second + j] = 5;
-	// 	}
-	// }
+	#ifdef _DEBUG
+		printf("Original A contains: \n");
+		for (int i = 0; i < shape_a.first; i++) {
+			for (int j = 0; j < shape_a.second; j++) {
+				printf("%.2f ", A[i][j]);
+			}
+			printf("\n");
+		}
+		printf("\n");
 
-	// printf("Original A contains: \n");
-	// for (int i = 0; i < shape_a.first; i++) {
-	// 	for (int j = 0; j < shape_a.second; j++) {
-	// 		printf("%.2f ", A[i][j]);
-	// 	}
-	// 	printf("\n");
-	// }
-	// printf("\n");
+		printf("h_A contains: \n");
+		for (int i = 0; i < shape_a.first; i++) {
+			for (int j = 0; j < shape_a.second; j++) {
+				printf("%.2f ", h_A[i*shape_a.second + j]);
+			}
+			printf("\n");
+		}
+		printf("\n");
 
-	// printf("h_A contains: \n");
-	// for (int i = 0; i < shape_a.first; i++) {
-	// 	for (int j = 0; j < shape_a.second; j++) {
-	// 		printf("%.2f ", h_A[i*shape_a.second + j]);
-	// 	}
-	// 	printf("\n");
-	// }
-	// printf("\n");
+		printf("Original B contains: \n");
+		for (int i = 0; i < shape_b.first; i++) {
+			for (int j = 0; j < shape_b.second; j++) {
+				printf("%.2f ", B[i][j]);
+			}
+			printf("\n");
+		}
+		printf("\n");
 
-	// printf("Original B contains: \n");
-	// for (int i = 0; i < shape_b.first; i++) {
-	// 	for (int j = 0; j < shape_b.second; j++) {
-	// 		printf("%.2f ", B[i][j]);
-	// 	}
-	// 	printf("\n");
-	// }
-	// printf("\n");
-
-	// printf("h_B contains: \n");
-	// for (int i = 0; i < shape_b.first; i++) {
-	// 	for (int j = 0; j < shape_b.second; j++) {
-	// 		printf("%.2f ", h_B[i*shape_b.second + j]);
-	// 	}
-	// 	printf("\n");
-	// }
+		printf("h_B contains: \n");
+		for (int i = 0; i < shape_b.first; i++) {
+			for (int j = 0; j < shape_b.second; j++) {
+				printf("%.2f ", h_B[i*shape_b.second + j]);
+			}
+			printf("\n");
+		}
+	#endif
 
 	// Allocate device vector
-	// printf("Allocating device vectors.\n");
 	T *d_A = NULL;
 	T *d_B = NULL;
 	T *d_C = NULL;
@@ -589,7 +584,6 @@ std::vector<std::valarray<T>> multiply(const std::vector<std::valarray<T>> &A, c
 	err = cudaMalloc((void **) &d_B, mat_B_size);
 	err = cudaMalloc((void **) &d_C, mat_C_size);
 
-	// printf ("Copying host vectors to CUDA device vectors\n");
 	err = cudaMemcpy(d_A, h_A, mat_A_size, cudaMemcpyHostToDevice);
 	err = cudaMemcpy(d_B, h_B, mat_B_size, cudaMemcpyHostToDevice);
 	err = cudaMemcpy(d_C, h_C, mat_C_size, cudaMemcpyHostToDevice);
@@ -601,7 +595,10 @@ std::vector<std::valarray<T>> multiply(const std::vector<std::valarray<T>> &A, c
 		dim3 dimBlock(32, 32);
 		dim3 dimGrid(16, 16);
 	#endif
-	// printf("Launching CUDA kernel with %d blocks and %d threads.\n", 4, 4 * 4);
+
+	#if defined _DEBUG
+		printf("Launching CUDA kernel with %d blocks and %d threads.\n", dimGrid.x * dimGrid.y, dimBlock.x * dimBlock.y);
+	#endif
 
 	CUDA_MAT_MULT_TILED<<<dimGrid, dimBlock>>>(d_A, d_B, d_C, shape_a.first, shape_a.second, shape_b.first, shape_b.second, shape_a.first, shape_b.second, TILE_DIM);
 
@@ -622,26 +619,25 @@ std::vector<std::valarray<T>> multiply(const std::vector<std::valarray<T>> &A, c
 		exit(EXIT_FAILURE);
 	}
 
-	// printf("h_C contains: \n");
-	// for (int i = 0; i < shape_a.first; i++) {
-	// 	for (int j = 0; j < shape_b.second; j++) {
-	// 		printf("%.2f ", h_C[i*shape_b.second + j]);
-	// 	}
-	// 	printf("\n");
-	// }
+	#if defined _DEBUG
+		printf("h_C contains: \n");
+		for (int i = 0; i < shape_a.first; i++) {
+			for (int j = 0; j < shape_b.second; j++) {
+				printf("%.2f ", h_C[i*shape_b.second + j]);
+			}
+			printf("\n");
+		}
+	#endif
 
-	// printf("C: ");
-	std::vector<std::valarray<T> > C(shape_a.first);         // Vector to store result
-	for (size_t i = 0; i < shape_a.first; i++) {  // For every row
+	// Copy back into vector of valarrays
+	std::vector<std::valarray<T> > C(shape_a.first);
+	for (size_t i = 0; i < shape_a.first; i++) {
 		std::valarray<T> temp(1,shape_b.second);
 		for (size_t j = 0; j < shape_b.second; j++) {
 			temp[j] = h_C[i*shape_b.second + j];
-			// printf("%.2f ", temp[j]);
 		}
-		// printf("\n");
-		C[i] = temp;            // Elementwise substraction
+		C[i] = temp;
 	}
-	// printf("\n");
 
 	// Free device global memory
 	err = cudaFree(d_A);
@@ -669,14 +665,6 @@ std::vector<std::valarray<T>> multiply(const std::vector<std::valarray<T>> &A, c
 	free(h_A);
 	free(h_B);
 	free(h_C);
-
-	// err = cudaDeviceReset();
-
-	// if (err != cudaSuccess)
-	// {
-	// 	fprintf(stderr, "Failed to allocate device vector A (error code: %s)!\n", cudaGetErrorString(err));
-	// 	exit(EXIT_FAILURE);
-	// }
 
 	return C;  // Return new resultant 2D vector
 }
