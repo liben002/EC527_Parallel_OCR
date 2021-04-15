@@ -101,7 +101,7 @@ std::vector<std::valarray<T> > operator-(const std::vector<std::valarray<T> > &A
 	printf("h_A contains: \n");
 	for (int i = 0; i < shape_a.first; i++) {
 		for (int j = 0; j < shape_a.second; j++) {
-			printf("%d ", h_A[i*shape_a.first + j]);
+			printf("%d ", h_A[i*shape_a.second + j]);
 		}
 		printf("\n");
 	}
@@ -110,7 +110,7 @@ std::vector<std::valarray<T> > operator-(const std::vector<std::valarray<T> > &A
 	printf("h_B contains: \n");
 	for (int i = 0; i < shape_b.first; i++) {
 		for (int j = 0; j < shape_b.second; j++) {
-			printf("%d ", h_B[i*shape_b.first + j]);
+			printf("%d ", h_B[i*shape_b.second + j]);
 		}
 		printf("\n");
 	}
