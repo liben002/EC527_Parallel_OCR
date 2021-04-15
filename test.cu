@@ -216,7 +216,7 @@ int main() {
 	for (int i = 0 ; i < 2; i++) {
 		std::valarray<int> temp1(1,3);
 		for (int j = 0; j < 3; j++) {
-			temp1[j] = i+1+i;
+			temp1[j] = j;
 		}
 		A.push_back(temp1);
 	}
@@ -224,7 +224,7 @@ int main() {
 	for (int i = 0 ; i < 3; i++) {
 		std::valarray<int> temp1(1,3);
 		for (int j = 0; j < 3; j++) {
-			temp1[j] = i + 2 + (i);
+			temp1[j] = i+j;
 		}
 		B.push_back(temp1);
 	}
