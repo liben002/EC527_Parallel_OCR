@@ -224,7 +224,7 @@ int main() {
 	for (int i = 0 ; i < 4; i++) {
 		std::valarray<int> temp1(1,4);
 		for (int j = 0; j < 4; j++) {
-			temp1[j] = (j==1);
+			temp1[j] = (j==i);
 		}
 		B.push_back(temp1);
 	}
