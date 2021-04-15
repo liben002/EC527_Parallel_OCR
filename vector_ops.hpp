@@ -503,7 +503,6 @@ std::vector<std::valarray<T>> multiply(const std::vector<std::valarray<T>> &A, c
 	#if defined _DEBUG
 		printf("shape A: %d %d\n", shape_a.first, shape_a.second);
 		printf("shape B: %d %d\n", shape_b.first, shape_b.second);
-	#endif
 
 	// If vectors don't have equal shape
 	if (shape_a.second != shape_b.first)
