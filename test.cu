@@ -61,7 +61,7 @@ std::vector<std::valarray<T> > operator-(const std::vector<std::valarray<T> > &A
 	printf("shape A: %d %d\n", shape_a.first, shape_a.second);
 	printf("shape B: %d %d\n", shape_b.first, shape_b.second);
 	// If vectors don't have equal shape
-	if (shape_a.first != shape_b.first || shape_a.second != shape_b.second)
+	if (shape_a.second != shape_b.first)
 	{
 		printf("BAD\n");
 	}
