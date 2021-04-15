@@ -1,2 +1,5 @@
-cuda:
-	nvcc -arch compute_35 -code sm_35 -std=c++11 -Xcompiler "-fopenmp" example_usage.cu -o example_usage.out
+cuda-v100:
+	nvcc -arch compute_70 -code sm_70 -std=c++11 main.cu -o main.out
+
+cuda-test
+	nvcc -arch compute_70 -code sm_70 -std=c++11 test.cu -o test.out
