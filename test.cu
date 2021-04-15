@@ -213,10 +213,10 @@ int main() {
 
 	std::vector<std::valarray<int> > A, B, C;
 
-	for (int i = 0 ; i < 2; i++) {
-		std::valarray<int> temp1(1,3);
-		for (int j = 0; j < 3; j++) {
-			temp1[j] = j;
+	for (int i = 0 ; i < 4; i++) {
+		std::valarray<int> temp1(1,4);
+		for (int j = 0; j < 4; j++) {
+			temp1[j] = (j==i);
 		}
 		A.push_back(temp1);
 	}
@@ -224,7 +224,7 @@ int main() {
 	for (int i = 0 ; i < 3; i++) {
 		std::valarray<int> temp1(1,3);
 		for (int j = 0; j < 3; j++) {
-			temp1[j] = i+j;
+			temp1[j] = (j==1);
 		}
 		B.push_back(temp1);
 	}

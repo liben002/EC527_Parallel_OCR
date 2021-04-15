@@ -869,7 +869,7 @@ std::vector<std::valarray<T>> multiply(const std::vector<std::valarray<T>> &A, c
 		std::valarray<T> temp(1,shape_b.second);
 		for (size_t j = 0; j < shape_b.second; j++) {
 			temp[j] = h_C[i*shape_b.second + j];
-			printf("%.2f", temp[j]);
+			printf("%.2f ", temp[j]);
 		}
 		printf("\n");
 		C[i] = temp;            // Elementwise substraction
