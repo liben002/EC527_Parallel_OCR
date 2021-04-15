@@ -20,13 +20,10 @@ __global__ void CUDA_MAT_MULT(T *d_A, T *d_B, T *d_C, int row_len_dA, int col_le
 	if (!(row >= row_len_dA || col >= col_len_dA || row >= row_len_dB || col >= col_len_dB))
 	{
 		float Pval = 0;
-
-		if (!(row >= row_len_dA || col >= col_len_dA || row >= row_len_dB || col >= col_len_dB))
-		{
-			for (int k = 0; k < row_len; k++) {
-				Pval += d_A[row*row_len_dA+k] * d_B[k*row_len_dB+col];
-				__syncthreads();
-			}
+		for (int i = 0; i < row_len_dA; i++) {
+			for (int j = 0; j < col_len_dB; j++) {
+			Pval += d_A[row*row_len_dA+i] * d_B[j*row_len_dB+col];
+			__syncthreads();
 		}
 		d_C[row*row_len_dB+col] = Pval;
 	}
