@@ -221,9 +221,9 @@ int main() {
 		A.push_back(temp1);
 	}
 
-	for (int i = 0 ; i < 3; i++) {
-		std::valarray<int> temp1(1,3);
-		for (int j = 0; j < 3; j++) {
+	for (int i = 0 ; i < 4; i++) {
+		std::valarray<int> temp1(1,4);
+		for (int j = 0; j < 4; j++) {
 			temp1[j] = (j==1);
 		}
 		B.push_back(temp1);
@@ -232,8 +232,8 @@ int main() {
 	C = A - B;
 
 	printf("Correct value: \n");
-	for (int i = 0 ; i < 2; i ++) {
-		for (int j = 0; j < 3; j++) {
+	for (int i = 0 ; i < 4; i ++) {
+		for (int j = 0; j < 4; j++) {
 			printf("%d ", C[i][j]);
 		}
 		printf("\n");
