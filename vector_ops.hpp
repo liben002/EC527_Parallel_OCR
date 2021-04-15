@@ -752,7 +752,7 @@ std::vector<std::valarray<T>> multiply(const std::vector<std::valarray<T>> &A, c
 	// Error code to check return values for CUDA calls
 	cudaError_t err = cudaSuccess;
 	size_t mat_A_size = shape_a.first * shape_a.second * sizeof(T);
-	size_t mat_B_size = shape_B.first * shape_b.second * sizeof(T);
+	size_t mat_B_size = shape_b.first * shape_b.second * sizeof(T);
 	size_t result_mat_size = shape_a.first * shape_b.second * sizeof(T);
 	// printf("Matrix dimensions: %d x %d, Size of matrix in bytes: %d\n", shape_a.first, shape_a.second, mat_size);
 
