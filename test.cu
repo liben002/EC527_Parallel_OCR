@@ -211,10 +211,10 @@ std::vector<std::valarray<T> > operator-(const std::vector<std::valarray<T> > &A
 
 int main() {
 
-	std::vector<std::valarray<int> > A, B, C;
+	std::vector<std::valarray<float> > A, B, C;
 
 	for (int i = 0 ; i < 4; i++) {
-		std::valarray<int> temp1(1,4);
+		std::valarray<float> temp1(1,4);
 		for (int j = 0; j < 4; j++) {
 			temp1[j] = (j==i);
 		}
@@ -222,7 +222,7 @@ int main() {
 	}
 
 	for (int i = 0 ; i < 4; i++) {
-		std::valarray<int> temp1(1,4);
+		std::valarray<float> temp1(1,4);
 		for (int j = 0; j < 4; j++) {
 			temp1[j] = (j==i);
 		}
@@ -234,7 +234,7 @@ int main() {
 	printf("Correct value: \n");
 	for (int i = 0 ; i < 4; i ++) {
 		for (int j = 0; j < 4; j++) {
-			printf("%d ", C[i][j]);
+			printf("%.2f ", C[i][j]);
 		}
 		printf("\n");
 	}
