@@ -19,3 +19,22 @@ __global__ void CUDA_MAT_MULT(T *d_A, T *d_B, T *d_C, int A_rows, int A_cols, in
 		d_C[((blockIdx.y * blockDim.y + threadIdx.y) * C_cols) + (blockIdx.x * blockDim.x) + threadIdx.x] = c_val;
 	}
 }
+
+
+__global__ void CUDA_MAT_MULT_TILED(float* A, float* B, float* C, int ARows, int ACols, int BRows, int BCols, int CRows, int CCols, int TILE_DIM) {
+
+	float CValue = 0;
+
+	int Row = blockIdx.y*TILE_DIM + threadIdx.y;
+	int Col = blockIdx.x*TILE_DIM + threadIdx.x;
+
+	for (int k = 0; k < (TILE_DIM + ACols - 1)/TILE_DIM; k++) {
+
+		for (int n = 0; n < TILE_DIM; ++n) 
+			if ((k*TILE_DIM + n < ACols && Row < ARows) && (k*TILE_DIM + n < BRows && Col < BCols))
+				CValue += A[Row*ACols + k*TILE_DIM + n] * B[(k*TILE_DIM + n)*BCols + Col];
+
+	}
+
+	if (Row < CRows && Col < CCols) C[((blockIdx.y * blockDim.y + threadIdx.y)*CCols)+(blockIdx.x*blockDim.x)+threadIdx.x]=CValue;
+}
