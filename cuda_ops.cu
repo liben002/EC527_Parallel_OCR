@@ -16,8 +16,8 @@ __global__ void CUDA_MAT_MULT(T* A, T* B, T* C, int ARows, int ACols, int BRows,
 
     T CValue = 0;
 
-    int Row = blockIdx.y + threadIdx.y;
-    int Col = blockIdx.x + threadIdx.x;
+    int Row = blockIdx.y * blockDim.y + threadIdx.y;
+    int Col = blockIdx.x * blockDim.x + threadIdx.x;
 
     for (int k = 0; k < (ACols); k++) {
             if ((k < ACols && Row < ARows) && (k < BRows && Col < BCols))
