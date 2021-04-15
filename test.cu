@@ -210,21 +210,26 @@ int main() {
 
 	std::vector<std::valarray<int> > A, B, C;
 
-	for (int i = 0 ; i < 8; i++) {
+	for (int i = 0 ; i < 2; i++) {
 		std::valarray<int> temp1(1,4);
-		std::valarray<int> temp2(1,4);
 		for (int i = 0; i < 4; i++) {
 			temp1[i] = i;
-			temp2[i] = i*4;
 		}
 		A.push_back(temp1);
-		B.push_back(temp2);
 	}
 
+	for (int i = 0 ; i < 1; i++) {
+		std::valarray<int> temp1(1,2);
+		for (int i = 0; i < 2; i++) {
+			temp1[i] = i;
+		}
+		B.push_back(temp1);
+	}
+	
 	C = A - B;
 
 	printf("Correct value: \n");
-	for (int i = 0 ; i < 8; i ++) {
+	for (int i = 0 ; i < 2; i ++) {
 		for (int j = 0; j < 4; j++) {
 			printf("%d ", C[i][j]);
 		}
