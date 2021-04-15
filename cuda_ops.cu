@@ -25,6 +25,7 @@ __global__ void CUDA_MAT_MULT(T *d_A, T *d_B, T *d_C, int row_len_dA, int col_le
 			Pval += d_A[row*row_len_dA+k] * d_B[k*row_len_dB+col];
 			__syncthreads();
 		}
+	}
 
 	d_C[row*row_len+col] = Pval;
 }
