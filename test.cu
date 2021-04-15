@@ -20,7 +20,7 @@
 template <typename T>
 __global__ void CUDA_MAT_MULT(T* A, T* B, T* C, int ARows, int ACols, int BRows, int BCols, int CRows, int CCols) {
 
-    float CValue = 0;
+    T CValue = 0;
 
     int Row = blockIdx.y + threadIdx.y;
     int Col = blockIdx.x + threadIdx.x;
