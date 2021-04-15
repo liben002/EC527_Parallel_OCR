@@ -745,7 +745,7 @@ std::vector<std::valarray<T>> multiply(const std::vector<std::valarray<T>> &A, c
 	// If vectors are not eligible for multiplication
 	if (shape_a.second != shape_b.first)
 	{
-		std::cerr << "ERROR (" << __func__ << ") : " << "Vectors are not eligible for multiplication " << shape_a << " and " << shape_b << std::endl;
+		std::cerr << "ERRORljkh (" << __func__ << ") : " << "Vectors are not eligible for multiplication " << shape_a << " and " << shape_b << std::endl;
 		std::exit(EXIT_FAILURE);
 	}
 
