@@ -20,7 +20,7 @@ __global__ void CUDA_MAT_MULT(T *d_A, T *d_B, T *d_C, int A_rows, int A_cols, in
 	}
 }
 
-
+template <typename T>
 __global__ void CUDA_MAT_MULT_TILED(T* A, T* B, T* C, int ARows, int ACols, int BRows, int BCols, int CRows, int CCols, int TILE_DIM) {
 
 	T CValue = 0;
