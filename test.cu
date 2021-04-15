@@ -59,7 +59,7 @@ std::vector<std::valarray<T> > operator-(const std::vector<std::valarray<T> > &A
 	const auto shape_b = get_shape(B);
 
 	printf("shape A: %d %d\n", shape_a.first, shape_a.second);
-	printf("shape B: %d %d\n", shape_a.first, shape_a.second);
+	printf("shape B: %d %d\n", shape_b.first, shape_b.second);
 	// If vectors don't have equal shape
 	if (shape_a.first != shape_b.first || shape_a.second != shape_b.second)
 	{
@@ -216,7 +216,7 @@ int main() {
 	for (int i = 0 ; i < 2; i++) {
 		std::valarray<int> temp1(1,4);
 		for (int j = 0; j < 4; j++) {
-			temp1[j] = i;
+			temp1[j] = i+2;
 		}
 		A.push_back(temp1);
 	}
@@ -224,7 +224,7 @@ int main() {
 	for (int i = 0 ; i < 1; i++) {
 		std::valarray<int> temp1(1,2);
 		for (int j = 0; j < 2; j++) {
-			temp1[j] = i;
+			temp1[j] = i+3;
 		}
 		B.push_back(temp1);
 	}
