@@ -5,39 +5,6 @@
 #include <omp.h>
 
 #define EPOCHS 100
-#define THREADS 4
-
-void detect_threads_setting()
-{
-	long int i, ognt;
-	char * env_ONT;
-
-	//Find out how many threads OpenMP thinks it is wants to use
-	#pragma omp parallel for
-	for (i=0; i<1; i++) {
-		ognt = omp_get_num_threads();
-	}
-
-	printf("omp's default number of threads is %d\n", ognt);
-
-	//If this is illegal (0 or less), default to the "#define THREADS" value that is defined above
-	if (ognt <= 0) {
-		if (THREADS != ognt) {
-			printf("Overriding with #define THREADS value %d\n", THREADS);
-			ognt = THREADS;
-		}
-	}
-
-	omp_set_num_threads(ognt);
-
-	// Once again ask OpenMP how many threads it is going to use
-	#pragma omp parallel for
-	for (i=0; i<1; i++) {
-		ognt = omp_get_num_threads();
-	}
-
-	printf("Using %d threads for OpenMP\n", ognt);
-}
 
 /**
  * Function to test neural network
@@ -67,8 +34,6 @@ static void test() {
  * @returns 0 on exit
  */
 int main() {
-
-	detect_threads_setting();
 
 	// start the timer
 	auto start = std::chrono::high_resolution_clock::now();  // Start clock
