@@ -212,20 +212,20 @@ int main() {
 
 	for (int i = 0 ; i < 2; i++) {
 		std::valarray<int> temp1(1,4);
-		for (int i = 0; i < 4; i++) {
-			temp1[i] = i;
+		for (int j = 0; j < 4; j++) {
+			temp1[j] = i;
 		}
 		A.push_back(temp1);
 	}
 
 	for (int i = 0 ; i < 1; i++) {
 		std::valarray<int> temp1(1,2);
-		for (int i = 0; i < 2; i++) {
-			temp1[i] = i;
+		for (int j = 0; j < 2; j++) {
+			temp1[j] = i;
 		}
 		B.push_back(temp1);
 	}
-	
+
 	C = A - B;
 
 	printf("Correct value: \n");
