@@ -6,15 +6,34 @@
 #include <cuda.h>
 
 
+// template <typename T>
+// __global__ void CUDA_MAT_SUBT(T *d_A, T *d_B, T *d_C, int row_len, int col_len)
+// {
+// 	int row = blockIdx.x * blockDim.x + threadIdx.x;
+// 	int col = blockIdx.y * blockDim.y + threadIdx.y;
+
+// 	if (row <= row_len && col <= col_len)
+// 		d_C[row*col_len+col] = d_A[row*col_len+col] - d_B[row*col_len+col];
+
+// }
+
 template <typename T>
-__global__ void CUDA_MAT_SUBT(T *d_A, T *d_B, T *d_C, int row_len, int col_len)
-{
-	int row = blockIdx.x * blockDim.x + threadIdx.x;
-	int col = blockIdx.y * blockDim.y + threadIdx.y;
+__global__ void CUDA_MAT_MULT(T* A, T* B, T* C, int ARows, int ACols, int BRows, int BCols, int CRows, int CCols) {
 
-	if (row <= row_len && col <= col_len)
-		d_C[row*col_len+col] = d_A[row*col_len+col] - d_B[row*col_len+col];
+    float CValue = 0;
 
+    int Row = blockIdx.y + threadIdx.y;
+    int Col = blockIdx.x + threadIdx.x;
+
+    for (int k = 0; k < (ACols - 1); k++) {
+            if ((k < ACols && Row < ARows) && (k < BRows && Col < BCols))
+                CValue += A[Row*ACols + k] * B[(k)*BCols + Col];
+
+    }
+
+    if (Row < CRows && Col < CCols){
+    	C[((blockIdx.y * blockDim.y + threadIdx.y)*CCols)+(blockIdx.x*blockDim.x)+threadIdx.x]=CValue;
+    }
 }
 
 template <typename T>
@@ -112,7 +131,7 @@ std::vector<std::valarray<T> > operator-(const std::vector<std::valarray<T> > &A
 	dim3 dimGrid(4, 4);
 	printf("Launching CUDA kernel with %d blocks and %d threads.\n", 4, 4 * 4);
 
-	CUDA_MAT_SUBT<<<dimGrid, dimBlock>>>(d_A, d_B, d_C, shape_a.first, shape_a.second);
+	CUDA_MAT_MULT<<<dimGrid, dimBlock>>>(d_A, d_B, d_C, shape_a.first, shape_a.second, shape_b.first, shape_b.second, shape_a.first, shape_b.second);
 
 	err = cudaGetLastError();
 
