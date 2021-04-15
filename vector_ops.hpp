@@ -830,7 +830,7 @@ std::vector<std::valarray<T>> multiply(const std::vector<std::valarray<T>> &A, c
 	dim3 dimGrid(32, 32);
 	// printf("Launching CUDA kernel with %d blocks and %d threads.\n", 16, 8 * 8);
 
-	CUDA_MAT_MULT<<<dimGrid, dimBlock>>>(d_A, d_B, d_C, shape_a.second, shape_a.first, shape_b.second, shape_b.first);
+	CUDA_MAT_MULT<<<dimGrid, dimBlock>>>(d_A, d_B, d_C, shape_a.first, shape_a.second, shape_b.first, shape_b.second, shape_a.first, shape_b.second);
 
 	err = cudaGetLastError();
 
