@@ -742,48 +742,27 @@ std::vector<std::valarray<T>> multiply(const std::vector<std::valarray<T>> &A, c
 	const auto shape_a = get_shape(A);
 	const auto shape_b = get_shape(B);
 
-	// If vectors are not eligible for multiplication
+	printf("shape A: %d %d\n", shape_a.first, shape_a.second);
+	printf("shape B: %d %d\n", shape_b.first, shape_b.second);
+	// If vectors don't have equal shape
 	if (shape_a.second != shape_b.first)
 	{
-		std::cerr << "ERROR (" << __func__ << ") : " << "Vectors are not eligible for multiplication " << shape_a << " and " << shape_b << std::endl;
-		std::exit(EXIT_FAILURE);
+		printf("BAD\n");
 	}
+
+	size_t mat_A_size = shape_a.first * shape_a.second * sizeof(T);
+	size_t mat_B_size = shape_b.first * shape_b.second * sizeof(T);
+	size_t mat_C_size = shape_a.first * shape_b.second * sizeof(T);
+	printf("Matrix dimensions: %d x %d, %d x %d, %d x %d\n", shape_a.first, shape_a.second, shape_b.first, shape_b.second, shape_a.first, shape_b.second);
 
 	// Error code to check return values for CUDA calls
 	cudaError_t err = cudaSuccess;
-	size_t mat_A_size = shape_a.first * shape_a.second * sizeof(T);
-	size_t mat_B_size = shape_b.first * shape_b.second * sizeof(T);
-	size_t result_mat_size = shape_a.first * shape_b.second * sizeof(T);
-	// printf("Matrix dimensions: %d x %d, Size of matrix in bytes: %d\n", shape_a.first, shape_a.second, mat_size);
 
-	T *h_A = NULL;
-	T *h_B = NULL;
-	T *h_C = NULL;
-
-	err = cudaHostAlloc((void **) &h_A, mat_A_size, cudaHostAllocDefault);
-	if (err != cudaSuccess)
-	{
-		fprintf(stderr, "Failed to allocate host vector A (error code: %s)!\n", cudaGetErrorString(err));
-		exit(EXIT_FAILURE);
-	}
-	err = cudaHostAlloc((void **) &h_B, mat_B_size, cudaHostAllocDefault);
-	if (err != cudaSuccess)
-	{
-		fprintf(stderr, "Failed to allocate host vector B (error code: %s)!\n", cudaGetErrorString(err));
-		exit(EXIT_FAILURE);
-	}
-	err = cudaHostAlloc((void **) &h_C, result_mat_size, cudaHostAllocDefault);
-	if (err != cudaSuccess)
-	{
-		fprintf(stderr, "Failed to allocate host vector C (error code: %s)!\n", cudaGetErrorString(err));
-		exit(EXIT_FAILURE);
-	}
-
-	if (h_A == NULL || h_B == NULL || h_C == NULL)
-	{
-		fprintf(stderr, "Failed to allocate host vectors\n");
-		exit(EXIT_FAILURE);
-	}
+	// Allocate host memory
+	printf("Allocating host vectors.\n");
+	T *h_A = (T *) malloc(mat_A_size);
+	T *h_B = (T *) malloc(mat_B_size);
+	T *h_C = (T *) malloc(mat_C_size);
 
 	for (int i = 0; i < shape_a.first; i++) {
 		for (int j = 0; j < shape_a.second; j++) {
@@ -797,38 +776,47 @@ std::vector<std::valarray<T>> multiply(const std::vector<std::valarray<T>> &A, c
 		}
 	}
 
+	for (int i = 0; i < shape_a.first; i++) {
+		for (int j = 0; j < shape_b.second; j++) {
+			h_C[i*shape_b.second + j] = 5;
+		}
+	}
+
+	printf("h_A contains: \n");
+	for (int i = 0; i < shape_a.first; i++) {
+		for (int j = 0; j < shape_a.second; j++) {
+			printf("%d ", h_A[i*shape_a.second + j]);
+		}
+		printf("\n");
+	}
+	printf("\n");
+
+	printf("h_B contains: \n");
+	for (int i = 0; i < shape_b.first; i++) {
+		for (int j = 0; j < shape_b.second; j++) {
+			printf("%d ", h_B[i*shape_b.second + j]);
+		}
+		printf("\n");
+	}
+
 	// Allocate device vector
-	// printf("Allocating device vectors.\n");
+	printf("Allocating device vectors.\n");
 	T *d_A = NULL;
 	T *d_B = NULL;
 	T *d_C = NULL;
 
 	err = cudaMalloc((void **) &d_A, mat_A_size);
-	if (err != cudaSuccess)
-	{
-		fprintf(stderr, "Failed to allocate device vector A (error code: %s)!\n", cudaGetErrorString(err));
-		exit(EXIT_FAILURE);
-	}
 	err = cudaMalloc((void **) &d_B, mat_B_size);
-	if (err != cudaSuccess)
-	{
-		fprintf(stderr, "Failed to allocate device vector B (error code: %s)!\n", cudaGetErrorString(err));
-		exit(EXIT_FAILURE);
-	}
-	err = cudaMalloc((void **) &d_C, result_mat_size);
-	if (err != cudaSuccess)
-	{
-		fprintf(stderr, "Failed to allocate device vector C (error code: %s)!\n", cudaGetErrorString(err));
-		exit(EXIT_FAILURE);
-	}
+	err = cudaMalloc((void **) &d_C, mat_C_size);
 
-	// printf("Copying host vectors to CUDA device vectors\n");
+	printf ("Copying host vectors to CUDA device vectors\n");
 	err = cudaMemcpy(d_A, h_A, mat_A_size, cudaMemcpyHostToDevice);
 	err = cudaMemcpy(d_B, h_B, mat_B_size, cudaMemcpyHostToDevice);
+	err = cudaMemcpy(d_C, h_C, mat_C_size, cudaMemcpyHostToDevice);
 
-	dim3 dimBlock(32, 32);
-	dim3 dimGrid(1, 1);
-	// printf("Launching CUDA kernel with %d blocks and %d threads.\n", 16, 8 * 8);
+	dim3 dimBlock(8, 8);
+	dim3 dimGrid(4, 4);
+	printf("Launching CUDA kernel with %d blocks and %d threads.\n", 4, 4 * 4);
 
 	CUDA_MAT_MULT<<<dimGrid, dimBlock>>>(d_A, d_B, d_C, shape_a.first, shape_a.second, shape_b.first, shape_b.second, shape_a.first, shape_b.second);
 
@@ -840,8 +828,8 @@ std::vector<std::valarray<T>> multiply(const std::vector<std::valarray<T>> &A, c
 		exit(EXIT_FAILURE);
 	}
 
-	// printf("Copy output data from CUDA device to the host memory\n");
-	err = cudaMemcpy(h_C, d_C, result_mat_size, cudaMemcpyDeviceToHost);
+	printf("Copy output data from CUDA device to the host memory\n");
+	err = cudaMemcpy(h_C, d_C, mat_C_size, cudaMemcpyDeviceToHost);
 
 	if (err != cudaSuccess)
 	{
@@ -849,7 +837,15 @@ std::vector<std::valarray<T>> multiply(const std::vector<std::valarray<T>> &A, c
 		exit(EXIT_FAILURE);
 	}
 
-	std::vector<std::valarray<T>> C(shape_a.first);         // Vector to store result
+	printf("h_C contains: \n");
+	for (int i = 0; i < shape_a.first; i++) {
+		for (int j = 0; j < shape_b.second; j++) {
+			printf("%d ", h_C[i*shape_b.second + j]);
+		}
+		printf("\n");
+	}
+
+	std::vector<std::valarray<T> > C(shape_a.first);         // Vector to store result
 	for (size_t i = 0; i < shape_a.first; i++) {  // For every row
 		std::valarray<T> temp(1,shape_b.second);
 		for (size_t j = 0; j < shape_b.second; j++) {
@@ -858,7 +854,7 @@ std::vector<std::valarray<T>> multiply(const std::vector<std::valarray<T>> &A, c
 		C[i] = temp;            // Elementwise substraction
 	}
 
-	// printf("Freeing device memory\n");
+	printf("Freeing\n");
 	// Free device global memory
 	err = cudaFree(d_A);
 	if (err != cudaSuccess)
@@ -866,7 +862,6 @@ std::vector<std::valarray<T>> multiply(const std::vector<std::valarray<T>> &A, c
 		fprintf(stderr, "Failed to free device matrix (error code: %s)!\n", cudaGetErrorString(err));
 		exit(EXIT_FAILURE);
 	}
-	// printf("Freed A\n");
 
 	err = cudaFree(d_B);
 	if (err != cudaSuccess)
@@ -874,7 +869,6 @@ std::vector<std::valarray<T>> multiply(const std::vector<std::valarray<T>> &A, c
 		fprintf(stderr, "Failed to free device matrix (error code: %s)!\n", cudaGetErrorString(err));
 		exit(EXIT_FAILURE);
 	}
-	// printf("Freed B\n");
 
 	err = cudaFree(d_C);
 	if (err != cudaSuccess)
@@ -882,41 +876,20 @@ std::vector<std::valarray<T>> multiply(const std::vector<std::valarray<T>> &A, c
 		fprintf(stderr, "Failed to free device matrix (error code: %s)!\n", cudaGetErrorString(err));
 		exit(EXIT_FAILURE);
 	}
-	// printf("Freed C\n");
 
-	err = cudaFreeHost(h_A);
+	// Free host memory
+	free(h_A);
+	free(h_B);
+	free(h_C);
+
+	err = cudaDeviceReset();
+
 	if (err != cudaSuccess)
 	{
-		fprintf(stderr, "Failed to free host matrix (error code: %s)!\n", cudaGetErrorString(err));
-		exit(EXIT_FAILURE);
-	}
-	err = cudaFreeHost(h_B);
-	if (err != cudaSuccess)
-	{
-		fprintf(stderr, "Failed to free host matrix (error code: %s)!\n", cudaGetErrorString(err));
-		exit(EXIT_FAILURE);
-	}
-	err = cudaFreeHost(h_C);
-	if (err != cudaSuccess)
-	{
-		fprintf(stderr, "Failed to free host matrix (error code: %s)!\n", cudaGetErrorString(err));
+		fprintf(stderr, "Failed to allocate device vector A (error code: %s)!\n", cudaGetErrorString(err));
 		exit(EXIT_FAILURE);
 	}
 
-	// std::vector<std::valarray<T>> C;  // Vector to store result
-	// // Normal matrix multiplication
-	// for (size_t i = 0; i < shape_a.first; i++)
-	// {
-	// 	std::valarray<T> row;
-	// 	row.resize(shape_b.second);
-	// 	for (size_t j = 0; j < shape_b.second; j++)
-	// 	{
-	// 		for (size_t k = 0; k < shape_a.second; k++) {
-	// 			row[j] += A[i][k] * B[k][j];
-	// 		}
-	// 	}
-	// 	C.push_back(row);
-	// }
 	return C;  // Return new resultant 2D vector
 }
 
