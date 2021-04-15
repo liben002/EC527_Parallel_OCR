@@ -855,13 +855,13 @@ std::vector<std::valarray<T>> multiply(const std::vector<std::valarray<T>> &A, c
 		exit(EXIT_FAILURE);
 	}
 
-	// printf("h_C contains: \n");
-	// for (int i = 0; i < shape_a.first; i++) {
-	// 	for (int j = 0; j < shape_b.second; j++) {
-	// 		printf("%.2f ", h_C[i*shape_b.second + j]);
-	// 	}
-	// 	printf("\n");
-	// }
+	printf("h_C contains: \n");
+	for (int i = 0; i < shape_a.first; i++) {
+		for (int j = 0; j < shape_b.second; j++) {
+			printf("%.2f ", h_C[i*shape_b.second + j]);
+		}
+		printf("\n");
+	}
 
 	// printf("C: ");
 	std::vector<std::valarray<T> > C(shape_a.first);         // Vector to store result
