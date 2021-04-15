@@ -858,7 +858,7 @@ std::vector<std::valarray<T>> multiply(const std::vector<std::valarray<T>> &A, c
 	printf("h_C contains: \n");
 	for (int i = 0; i < shape_a.first; i++) {
 		for (int j = 0; j < shape_b.second; j++) {
-			printf("%d ", h_C[i*shape_b.second + j]);
+			printf("%.2f ", h_C[i*shape_b.second + j]);
 		}
 		printf("\n");
 	}
