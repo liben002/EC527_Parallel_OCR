@@ -39,7 +39,7 @@ __global__ void CUDA_MAT_MULT(T* A, T* B, T* C, int ARows, int ACols, int BRows,
     int Col = blockIdx.x + threadIdx.x;
 
     for (int k = 0; k < (ACols - 1); k++) {
-            if ((k + n < ACols && Row < ARows) && (k + n < BRows && Col < BCols))
+            if ((k < ACols && Row < ARows) && (k < BRows && Col < BCols))
                 CValue += A[Row*ACols + k + n] * B[(k + n)*BCols + Col];
 
     }
