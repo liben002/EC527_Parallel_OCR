@@ -23,7 +23,7 @@
 #define _TILED
 #define TILE_DIM 16
 
-#define DEBUG
+// #define DEBUG
 
 /**
  * @namespace machine_learning
