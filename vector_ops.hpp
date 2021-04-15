@@ -782,10 +782,28 @@ std::vector<std::valarray<T>> multiply(const std::vector<std::valarray<T>> &A, c
 		}
 	}
 
+	printf("Original A contains: \n");
+	for (int i = 0; i < shape_a.first; i++) {
+		for (int j = 0; j < shape_a.second; j++) {
+			printf("%.2f ", A[i][j]);
+		}
+		printf("\n");
+	}
+	printf("\n");
+
 	printf("h_A contains: \n");
 	for (int i = 0; i < shape_a.first; i++) {
 		for (int j = 0; j < shape_a.second; j++) {
-			printf("%d ", h_A[i*shape_a.second + j]);
+			printf("%.2f ", h_A[i*shape_a.second + j]);
+		}
+		printf("\n");
+	}
+	printf("\n");
+
+	printf("Original B contains: \n");
+	for (int i = 0; i < shape_b.first; i++) {
+		for (int j = 0; j < shape_b.second; j++) {
+			printf("%.2f ", B[i][j]);
 		}
 		printf("\n");
 	}
@@ -794,7 +812,7 @@ std::vector<std::valarray<T>> multiply(const std::vector<std::valarray<T>> &A, c
 	printf("h_B contains: \n");
 	for (int i = 0; i < shape_b.first; i++) {
 		for (int j = 0; j < shape_b.second; j++) {
-			printf("%d ", h_B[i*shape_b.second + j]);
+			printf("%.2f ", h_B[i*shape_b.second + j]);
 		}
 		printf("\n");
 	}
