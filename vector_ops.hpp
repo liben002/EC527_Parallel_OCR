@@ -826,7 +826,7 @@ std::vector<std::valarray<T>> multiply(const std::vector<std::valarray<T>> &A, c
 	err = cudaMemcpy(d_A, h_A, mat_A_size, cudaMemcpyHostToDevice);
 	err = cudaMemcpy(d_B, h_B, mat_B_size, cudaMemcpyHostToDevice);
 
-	dim3 dimBlock(64, 64);
+	dim3 dimBlock(32, 32);
 	dim3 dimGrid(1, 1);
 	// printf("Launching CUDA kernel with %d blocks and %d threads.\n", 16, 8 * 8);
 
