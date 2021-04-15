@@ -12,20 +12,20 @@ __global__ void CUDA_MAT_SUBT(T *d_A, T *d_B, T *d_C, int row_len, int col_len)
 }
 
 template <typename T>
-__global__ void CUDA_MAT_MULT(T* A, T* B, T* C, int ARows, int ACols, int BRows, int BCols, int CRows, int CCols) {
+__global__ void CUDA_MAT_MULT(T *d_A, T *d_B, T *d_C, int A_rows, int A_cols, int B_rows, int B_cols, int C_rows, int C_cols) {
 
-    T CValue = 0;
+    T c_val = 0;
 
-    int Row = blockIdx.y * blockDim.y + threadIdx.y;
-    int Col = blockIdx.x * blockDim.x + threadIdx.x;
+    int row = blockIdx.y * blockDim.y + threadIdx.y;
+    int col = blockIdx.x * blockDim.x + threadIdx.x;
 
-    for (int k = 0; k < (ACols); k++) {
-            if ((k < ACols && Row < ARows) && (k < BRows && Col < BCols))
-                CValue += A[Row*ACols + k] * B[(k)*BCols + Col];
+    for (int k = 0; k < (A_cols); k++) {
+            if ((k < A_cols && row < A_rows) && (k < B_rows && col < B_cols))
+                c_val += d_A[row * A_cols + k] * d_B[k * B_cols + col];
 
     }
 
-    if (Row < CRows && Col < CCols){
-    	C[((blockIdx.y * blockDim.y + threadIdx.y)*CCols)+(blockIdx.x*blockDim.x)+threadIdx.x]=CValue;
+    if (row < C_rows && col < C_cols){
+    	d_C[((blockIdx.y * blockDim.y + threadIdx.y)*C_cols)+(blockIdx.x*blockDim.x)+threadIdx.x] = c_val;
     }
 }
