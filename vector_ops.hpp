@@ -589,7 +589,8 @@ std::vector<std::valarray<T>> multiply(const std::vector<std::valarray<T>> &A, c
 	err = cudaMemcpy(d_C, h_C, mat_C_size, cudaMemcpyHostToDevice);
 
 	dim3 dimBlock(TILE_DIM, TILE_DIM);
-	dim3 dimGrid((shape_b.second + dimBlock.x - 1)/dimBlock.x, (shape_a.first + dimBlock.y - 1)/dimBlock.y);
+	dim3 dimGrid(16,16);
+	// dim3 dimGrid((shape_b.second + dimBlock.x - 1)/dimBlock.x, (shape_a.first + dimBlock.y - 1)/dimBlock.y);
 	// printf("Launching CUDA kernel with %d blocks and %d threads.\n", 4, 4 * 4);
 
 	CUDA_MAT_MULT_TILED<<<dimGrid, dimBlock>>>(d_A, d_B, d_C, shape_a.first, shape_a.second, shape_b.first, shape_b.second, shape_a.first, shape_b.second, TILE_DIM);
