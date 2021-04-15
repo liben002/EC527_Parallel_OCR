@@ -904,13 +904,13 @@ std::vector<std::valarray<T>> multiply(const std::vector<std::valarray<T>> &A, c
 	free(h_B);
 	free(h_C);
 
-	err = cudaDeviceReset();
+	// err = cudaDeviceReset();
 
-	if (err != cudaSuccess)
-	{
-		fprintf(stderr, "Failed to allocate device vector A (error code: %s)!\n", cudaGetErrorString(err));
-		exit(EXIT_FAILURE);
-	}
+	// if (err != cudaSuccess)
+	// {
+	// 	fprintf(stderr, "Failed to allocate device vector A (error code: %s)!\n", cudaGetErrorString(err));
+	// 	exit(EXIT_FAILURE);
+	// }
 
 	return C;  // Return new resultant 2D vector
 }
