@@ -222,9 +222,9 @@ int main() {
 	}
 
 	for (int i = 0 ; i < 3; i++) {
-		std::valarray<int> temp1(1,2);
-		for (int j = 0; j < 2; j++) {
-			temp1[j] = i + 7 + (i);
+		std::valarray<int> temp1(1,3);
+		for (int j = 0; j < 3; j++) {
+			temp1[j] = i + 2 + (i);
 		}
 		B.push_back(temp1);
 	}
