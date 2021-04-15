@@ -21,9 +21,9 @@ __global__ void CUDA_MAT_MULT(T *d_A, T *d_B, T *d_C, int A_rows, int A_cols, in
 }
 
 
-__global__ void CUDA_MAT_MULT_TILED(float* A, float* B, float* C, int ARows, int ACols, int BRows, int BCols, int CRows, int CCols, int TILE_DIM) {
+__global__ void CUDA_MAT_MULT_TILED(T* A, T* B, T* C, int ARows, int ACols, int BRows, int BCols, int CRows, int CCols, int TILE_DIM) {
 
-	float CValue = 0;
+	T CValue = 0;
 
 	int Row = blockIdx.y*TILE_DIM + threadIdx.y;
 	int Col = blockIdx.x*TILE_DIM + threadIdx.x;
