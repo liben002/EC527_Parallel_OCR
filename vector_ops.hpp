@@ -845,14 +845,18 @@ std::vector<std::valarray<T>> multiply(const std::vector<std::valarray<T>> &A, c
 		printf("\n");
 	}
 
+	printf("C: ");
 	std::vector<std::valarray<T> > C(shape_a.first);         // Vector to store result
 	for (size_t i = 0; i < shape_a.first; i++) {  // For every row
 		std::valarray<T> temp(1,shape_b.second);
 		for (size_t j = 0; j < shape_b.second; j++) {
 			temp[j] = h_C[i*shape_b.second + j];
+			printf("%.2f", temp[j]);
 		}
+		printf("\n");
 		C[i] = temp;            // Elementwise substraction
 	}
+	printf("\n");
 
 	printf("Freeing\n");
 	// Free device global memory
