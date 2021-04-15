@@ -293,31 +293,31 @@ template <typename T>
 std::vector<std::vector<std::valarray<T>>> minmax_scaler(const std::vector<std::vector<std::valarray<T>>> &A, const T &low, const T &high)
 {
 	std::vector<std::vector<std::valarray<T>>> B =
-        A;                               // Copying into new vector B
-    const auto shape = get_shape(B[0]);  // Storing shape of B's every element
-    // As this function is used for scaling training data vector should be of
-    // shape (1, X)
-    if (shape.first != 1) {
-        std::cerr << "ERROR (" << __func__ << ") : ";
-        std::cerr
-            << "Supplied vector is not supported for minmax scaling, shape: ";
-        std::cerr << shape << std::endl;
-        std::exit(EXIT_FAILURE);
-    }
-    for (size_t i = 0; i < shape.second; i++) {
-        T min = B[0][0][i], max = B[0][0][i];
-        for (size_t j = 0; j < B.size(); j++) {
-            // Updating minimum and maximum values
-            min = std::min(min, B[j][0][i]);
-            max = std::max(max, B[j][0][i]);
-        }
-        for (size_t j = 0; j < B.size(); j++) {
-            // Applying min-max scaler formula
-            B[j][0][i] =
-                ((B[j][0][i] - min) / (max - min)) * (high - low) + low;
-        }
-    }
-    return B;  // Return new resultant 3D vector
+		A;                               // Copying into new vector B
+	const auto shape = get_shape(B[0]);  // Storing shape of B's every element
+	// As this function is used for scaling training data vector should be of
+	// shape (1, X)
+	if (shape.first != 1) {
+		std::cerr << "ERROR (" << __func__ << ") : ";
+		std::cerr
+			<< "Supplied vector is not supported for minmax scaling, shape: ";
+		std::cerr << shape << std::endl;
+		std::exit(EXIT_FAILURE);
+	}
+	for (size_t i = 0; i < shape.second; i++) {
+		T min = B[0][0][i], max = B[0][0][i];
+		for (size_t j = 0; j < B.size(); j++) {
+			// Updating minimum and maximum values
+			min = std::min(min, B[j][0][i]);
+			max = std::max(max, B[j][0][i]);
+		}
+		for (size_t j = 0; j < B.size(); j++) {
+			// Applying min-max scaler formula
+			B[j][0][i] =
+				((B[j][0][i] - min) / (max - min)) * (high - low) + low;
+		}
+	}
+	return B;  // Return new resultant 3D vector
 }
 
 /**
@@ -373,10 +373,10 @@ std::vector<std::valarray<T>> operator*(const std::vector<std::valarray<T>> &A, 
 {
 	std::vector<std::valarray<double>> B = A; // New vector to store resultant vector
 
-    for (auto &b : B) {  // For every row in vector
-        b = b * val;     // Multiply row with scaler
-    }
-    return B;  // Return new resultant 2D vector
+	for (auto &b : B) {  // For every row in vector
+		b = b * val;     // Multiply row with scaler
+	}
+	return B;  // Return new resultant 2D vector
 }
 
 // =========================================================================================
@@ -393,10 +393,10 @@ template <typename T>
 std::vector<std::valarray<T>> operator/(const std::vector<std::valarray<T>> &A, const T &val)
 {
 	std::vector<std::valarray<double>> B = A; // New vector to store resultant vector
-    for (auto &b : B) { // For every row in vector
-        b = b / val; // Divide row with scaler
-    }
-    return B; // Return new resultant 2D vector
+	for (auto &b : B) { // For every row in vector
+		b = b / val; // Divide row with scaler
+	}
+	return B; // Return new resultant 2D vector
 }
 
 
@@ -481,7 +481,7 @@ std::vector<std::valarray<T>> operator-(
 	return C;  // Return new resultant 2D vector
 }
 
-// TODO: CUDA
+// Optimized using CUDA
 /**
  * Function to multiply two 2D vectors
  * @tparam T typename of the vector
@@ -500,7 +500,8 @@ std::vector<std::valarray<T>> multiply(const std::vector<std::valarray<T>> &A, c
 	// If vectors don't have equal shape
 	if (shape_a.second != shape_b.first)
 	{
-		printf("BAD\n");
+		std::cerr << "ERROR (" << __func__ << ") : " << "Vectors are not eligible for multiplication " << shape_a << " and " << shape_b << std::endl;
+		std::exit(EXIT_FAILURE);
 	}
 
 	size_t mat_A_size = shape_a.first * shape_a.second * sizeof(T);

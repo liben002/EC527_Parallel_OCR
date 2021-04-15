@@ -1,31 +1,22 @@
 #include <cuda_runtime_api.h>
 #include <cuda.h>
 
+// Global CUDA
 template <typename T>
-__global__ void CUDA_MAT_SUBT(T *d_A, T *d_B, T *d_C, int row_len, int col_len)
-{
-	int row = blockIdx.x * blockDim.x + threadIdx.x;
-	int col = blockIdx.y * blockDim.y + threadIdx.y;
+__global__ void CUDA_MAT_MULT(T* d_A, T* d_B, T* d_C, int rows_A, int cols_A, int rows_B, int cols_B) {
 
-	if (row < row_len && col < col_len)
-		d_C[row*col_len+col] = d_A[row*col_len+col] - d_B[row*col_len+col];
-}
+    T c_val = 0;
 
-template <typename T>
-__global__ void CUDA_MAT_MULT(T* A, T* B, T* C, int ARows, int ACols, int BRows, int BCols, int CRows, int CCols) {
+    int row = blockIdx.y * blockDim.y + threadIdx.y;
+    int col = blockIdx.x * blockDim.x + threadIdx.x;
 
-    T CValue = 0;
-
-    int Row = blockIdx.y * blockDim.y + threadIdx.y;
-    int Col = blockIdx.x * blockDim.x + threadIdx.x;
-
-    for (int k = 0; k < (ACols); k++) {
-            if ((k < ACols && Row < ARows) && (k < BRows && Col < BCols))
-                CValue += A[Row*ACols + k] * B[(k)*BCols + Col];
+    for (int i = 0; i < (cols_A); i++) {
+            if ((i < cols_A && row < rows_A) && (i < rows_B && col < cols_B))
+                c_val += d_A[row*cols_A + i] * d_B[i*cols_B + col];
 
     }
 
-    if (Row < CRows && Col < CCols){
-    	C[((blockIdx.y * blockDim.y + threadIdx.y)*CCols)+(blockIdx.x*blockDim.x)+threadIdx.x]=CValue;
+    if (row < rows_A && col < cols_B){
+    	d_C[((blockIdx.y * blockDim.y + threadIdx.y)*cols_B)+(blockIdx.x*blockDim.x)+threadIdx.x] = c_val;
     }
 }
