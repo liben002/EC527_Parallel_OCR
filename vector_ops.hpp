@@ -503,6 +503,7 @@ std::vector<std::valarray<T>> multiply(const std::vector<std::valarray<T>> &A, c
 	#if defined _DEBUG
 		printf("shape A: %d %d\n", shape_a.first, shape_a.second);
 		printf("shape B: %d %d\n", shape_b.first, shape_b.second);
+	#endif
 
 	// If vectors don't have equal shape
 	if (shape_a.second != shape_b.first)
@@ -599,6 +600,7 @@ std::vector<std::valarray<T>> multiply(const std::vector<std::valarray<T>> &A, c
 	#else
 		dim3 dimBlock(32, 32);
 		dim3 dimGrid(16, 16);
+	#endif
 	// printf("Launching CUDA kernel with %d blocks and %d threads.\n", 4, 4 * 4);
 
 	CUDA_MAT_MULT_TILED<<<dimGrid, dimBlock>>>(d_A, d_B, d_C, shape_a.first, shape_a.second, shape_b.first, shape_b.second, shape_a.first, shape_b.second, TILE_DIM);
