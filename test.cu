@@ -25,7 +25,7 @@ __global__ void CUDA_MAT_MULT(T* A, T* B, T* C, int ARows, int ACols, int BRows,
     int Row = blockIdx.y + threadIdx.y;
     int Col = blockIdx.x + threadIdx.x;
 
-    for (int k = 0; k < (ACols - 1); k++) {
+    for (int k = 0; k < (ACols); k++) {
             if ((k < ACols && Row < ARows) && (k < BRows && Col < BCols))
                 CValue += A[Row*ACols + k] * B[(k)*BCols + Col];
 
@@ -69,7 +69,7 @@ std::vector<std::valarray<T> > operator-(const std::vector<std::valarray<T> > &A
 	size_t mat_A_size = shape_a.first * shape_a.second * sizeof(T);
 	size_t mat_B_size = shape_b.first * shape_b.second * sizeof(T);
 	size_t mat_C_size = shape_a.first * shape_b.second * sizeof(T);
-	printf("Matrix dimensions: %d x %d, %d x %d, %d x %d: %d\n", shape_a.first, shape_a.second, shape_b.first, shape_b.second, shape_a.first, shape_b.second);
+	printf("Matrix dimensions: %d x %d, %d x %d, %d x %d\n", shape_a.first, shape_a.second, shape_b.first, shape_b.second, shape_a.first, shape_b.second);
 
 	// Error code to check return values for CUDA calls
 	cudaError_t err = cudaSuccess;
@@ -233,7 +233,7 @@ int main() {
 
 	printf("Correct value: \n");
 	for (int i = 0 ; i < 2; i ++) {
-		for (int j = 0; j < 4; j++) {
+		for (int j = 0; j < 3; j++) {
 			printf("%d ", C[i][j]);
 		}
 		printf("\n");
