@@ -20,10 +20,10 @@
 #include <cuda.h>
 #include "cuda_ops.cu"
 
-#define _TILED 1
+#define _TILED
 #define TILE_DIM 16
 
-#define _DEBUG 0
+#define DEBUG
 
 /**
  * @namespace machine_learning
@@ -500,7 +500,7 @@ std::vector<std::valarray<T>> multiply(const std::vector<std::valarray<T>> &A, c
 	const auto shape_a = get_shape(A);
 	const auto shape_b = get_shape(B);
 
-	#if defined _DEBUG
+	#ifdef DEBUG
 		printf("shape A: %d %d\n", shape_a.first, shape_a.second);
 		printf("shape B: %d %d\n", shape_b.first, shape_b.second);
 	#endif
@@ -538,7 +538,7 @@ std::vector<std::valarray<T>> multiply(const std::vector<std::valarray<T>> &A, c
 		}
 	}
 
-	#ifdef _DEBUG
+	#ifdef DEBUG
 		printf("Original A contains: \n");
 		for (int i = 0; i < shape_a.first; i++) {
 			for (int j = 0; j < shape_a.second; j++) {
@@ -588,7 +588,7 @@ std::vector<std::valarray<T>> multiply(const std::vector<std::valarray<T>> &A, c
 	err = cudaMemcpy(d_B, h_B, mat_B_size, cudaMemcpyHostToDevice);
 	err = cudaMemcpy(d_C, h_C, mat_C_size, cudaMemcpyHostToDevice);
 
-	#if defined _TILED
+	#ifdef _TILED
 		dim3 dimBlock(TILE_DIM, TILE_DIM);
 		dim3 dimGrid((shape_b.second + dimBlock.x - 1)/dimBlock.x, (shape_a.first + dimBlock.y - 1)/dimBlock.y);
 	#else
@@ -596,7 +596,7 @@ std::vector<std::valarray<T>> multiply(const std::vector<std::valarray<T>> &A, c
 		dim3 dimGrid(16, 16);
 	#endif
 
-	#if defined _DEBUG
+	#ifdef DEBUG
 		printf("Launching CUDA kernel with %d blocks and %d threads.\n", dimGrid.x * dimGrid.y, dimBlock.x * dimBlock.y);
 	#endif
 
@@ -619,7 +619,7 @@ std::vector<std::valarray<T>> multiply(const std::vector<std::valarray<T>> &A, c
 		exit(EXIT_FAILURE);
 	}
 
-	#if defined _DEBUG
+	#ifdef DEBUG
 		printf("h_C contains: \n");
 		for (int i = 0; i < shape_a.first; i++) {
 			for (int j = 0; j < shape_b.second; j++) {
