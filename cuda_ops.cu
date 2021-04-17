@@ -49,7 +49,7 @@ __global__ void CUDA_MAT_MULT_TILED(T* d_A, T* d_B, T* d_C, int A_rows, int A_co
 	}
 }
 
-__global__ void MatMul(float* A, float* B, float* C, int ARows, int ACols, int BRows, int BCols, int CRows, int CCols, int TILE_WIDTH)
+__global__ void MatMul(float* A, float* B, float* C, int ARows, int ACols, int BRows, int BCols, int CRows, int CCols, const int TILE_WIDTH)
 {
 	float CValue = 0;
 
