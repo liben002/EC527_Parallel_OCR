@@ -38,7 +38,7 @@ static void test(int row_length) {
  */
 int main() {
 
-	double duration_table[(END-START) / STEP_SIZE + 2][2]
+	double duration_table[(END-START) / STEP_SIZE + 2][2];
 
 	for (int i = START; i <= END; i+= STEP_SIZE)
 	{
