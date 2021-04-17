@@ -4,8 +4,8 @@
 #include <cassert>
 
 #define EPOCHS 100
-#define START 100
-#define END 1500
+#define START 600
+#define END 1600
 #define STEP_SIZE 100
 
 /**
@@ -49,7 +49,7 @@ int main() {
 		test(i);
 
 		// stop the timer
-		auto stop = std::chrono::high_resolution_clock::now();  // Stoping the clock
+		auto stop = std::chrono::high_resolution_clock::now();  // Stopping the clock
 		auto duration = std::chrono::duration_cast<std::chrono::microseconds>(stop - start);
 
 		printf("Time for learning over %d epochs: %f seconds\n", EPOCHS, duration.count() / 1e6);
