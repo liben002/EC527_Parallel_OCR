@@ -1,6 +1,7 @@
 /**
  * @file vector_ops.hpp
- * @author [Deep Raval](https://github.com/imdeep2905)
+ * @original author [Deep Raval](https://github.com/imdeep2905)
+ * Used with permission
  *
  * @brief Various functions for vectors associated with [NeuralNetwork (aka
  * Multilayer Perceptron)]
@@ -150,7 +151,6 @@ std::valarray<T> pop_back(const std::valarray<T> &A)
 	return B;  // Return resultant vector
 }
 
-// TODO: OpenMP
 /**
  * Function to equally shuffle two 3D vectors (used for shuffling training data)
  * @tparam T typename of the vector
@@ -247,7 +247,6 @@ void zeroes_initialization(std::vector<std::valarray<T>> &A, const std::pair<siz
 	return;
 }
 
-// TODO: Make function use accumulators and loop unrolling
 /**
  * Function to get sum of all elements in 2D vector
  * @tparam T typename of the vector
@@ -303,9 +302,7 @@ std::vector<std::vector<std::valarray<T>>> minmax_scaler(const std::vector<std::
 	// As this function is used for scaling training data vector should be of
 	// shape (1, X)
 	if (shape.first != 1) {
-		std::cerr << "ERROR (" << __func__ << ") : ";
-		std::cerr
-			<< "Supplied vector is not supported for minmax scaling, shape: ";
+		std::cerr << "ERROR (" << __func__ << ") : " << "Supplied vector is not supported for minmax scaling, shape: ";
 		std::cerr << shape << std::endl;
 		std::exit(EXIT_FAILURE);
 	}
@@ -318,8 +315,7 @@ std::vector<std::vector<std::valarray<T>>> minmax_scaler(const std::vector<std::
 		}
 		for (size_t j = 0; j < B.size(); j++) {
 			// Applying min-max scaler formula
-			B[j][0][i] =
-				((B[j][0][i] - min) / (max - min)) * (high - low) + low;
+			B[j][0][i] = ((B[j][0][i] - min) / (max - min)) * (high - low) + low;
 		}
 	}
 	return B;  // Return new resultant 3D vector
@@ -404,8 +400,6 @@ std::vector<std::valarray<T>> operator/(const std::vector<std::valarray<T>> &A, 
 	return B; // Return new resultant 2D vector
 }
 
-
-// TODO: Vector Intrinsic?
 /**
  * Function to get transpose of 2D vector
  * @tparam T typename of the vector
@@ -473,10 +467,9 @@ std::vector<std::valarray<T>> operator-(
 	const auto shape_a = get_shape(A);
 	const auto shape_b = get_shape(B);
 	// If vectors don't have equal shape
-	if (shape_a.first != shape_b.first || shape_a.second != shape_b.second) {
-		std::cerr << "ERROR (" << __func__ << ") : ";
-		std::cerr << "Supplied vectors have different shapes ";
-		std::cerr << shape_a << " and " << shape_b << std::endl;
+	if (shape_a.first != shape_b.first || shape_a.second != shape_b.second)
+	{
+		std::cerr << "ERROR (" << __func__ << ") : " << "Supplied vectors have different shapes " << shape_a << " and " << shape_b << std::endl;
 		std::exit(EXIT_FAILURE);
 	}
 	std::vector<std::valarray<T>> C;         // Vector to store result
@@ -486,9 +479,11 @@ std::vector<std::valarray<T>> operator-(
 	return C;  // Return new resultant 2D vector
 }
 
+// ========================================
 // Optimized using CUDA
+// ========================================
 /**
- * Function to multiply two 2D vectors
+ * Function to multiply two 2D vectors (MMM)
  * @tparam T typename of the vector
  * @param A First 2D vector
  * @param B Second 2D vector
@@ -526,22 +521,28 @@ std::vector<std::valarray<T>> multiply(const std::vector<std::valarray<T>> &A, c
 	T *h_B = (T *) malloc(mat_B_size);
 	T *h_C = (T *) malloc(mat_C_size);
 
-	for (int i = 0; i < shape_a.first; i++) {
-		for (int j = 0; j < shape_a.second; j++) {
+	for (int i = 0; i < shape_a.first; i++)
+	{
+		for (int j = 0; j < shape_a.second; j++)
+		{
 			h_A[i*shape_a.second + j] = A[i][j];
 		}
 	}
 
-	for (int i = 0; i < shape_b.first; i++) {
-		for (int j = 0; j < shape_b.second; j++) {
+	for (int i = 0; i < shape_b.first; i++)
+	{
+		for (int j = 0; j < shape_b.second; j++)
+		{
 			h_B[i*shape_b.second + j] = B[i][j];
 		}
 	}
 
 	#ifdef DEBUG
 		printf("Original A contains: \n");
-		for (int i = 0; i < shape_a.first; i++) {
-			for (int j = 0; j < shape_a.second; j++) {
+		for (int i = 0; i < shape_a.first; i++)
+		{
+			for (int j = 0; j < shape_a.second; j++)
+			{
 				printf("%.2f ", A[i][j]);
 			}
 			printf("\n");
@@ -549,8 +550,10 @@ std::vector<std::valarray<T>> multiply(const std::vector<std::valarray<T>> &A, c
 		printf("\n");
 
 		printf("h_A contains: \n");
-		for (int i = 0; i < shape_a.first; i++) {
-			for (int j = 0; j < shape_a.second; j++) {
+		for (int i = 0; i < shape_a.first; i++)
+		{
+			for (int j = 0; j < shape_a.second; j++)
+			{
 				printf("%.2f ", h_A[i*shape_a.second + j]);
 			}
 			printf("\n");
@@ -558,8 +561,10 @@ std::vector<std::valarray<T>> multiply(const std::vector<std::valarray<T>> &A, c
 		printf("\n");
 
 		printf("Original B contains: \n");
-		for (int i = 0; i < shape_b.first; i++) {
-			for (int j = 0; j < shape_b.second; j++) {
+		for (int i = 0; i < shape_b.first; i++)
+		{
+			for (int j = 0; j < shape_b.second; j++)
+			{
 				printf("%.2f ", B[i][j]);
 			}
 			printf("\n");
@@ -567,8 +572,10 @@ std::vector<std::valarray<T>> multiply(const std::vector<std::valarray<T>> &A, c
 		printf("\n");
 
 		printf("h_B contains: \n");
-		for (int i = 0; i < shape_b.first; i++) {
-			for (int j = 0; j < shape_b.second; j++) {
+		for (int i = 0; i < shape_b.first; i++)
+		{
+			for (int j = 0; j < shape_b.second; j++)
+			{
 				printf("%.2f ", h_B[i*shape_b.second + j]);
 			}
 			printf("\n");
@@ -621,8 +628,10 @@ std::vector<std::valarray<T>> multiply(const std::vector<std::valarray<T>> &A, c
 
 	#ifdef DEBUG
 		printf("h_C contains: \n");
-		for (int i = 0; i < shape_a.first; i++) {
-			for (int j = 0; j < shape_b.second; j++) {
+		for (int i = 0; i < shape_a.first; i++)
+		{
+			for (int j = 0; j < shape_b.second; j++)
+			{
 				printf("%.2f ", h_C[i*shape_b.second + j]);
 			}
 			printf("\n");
@@ -631,9 +640,11 @@ std::vector<std::valarray<T>> multiply(const std::vector<std::valarray<T>> &A, c
 
 	// Copy back into vector of valarrays
 	std::vector<std::valarray<T> > C(shape_a.first);
-	for (size_t i = 0; i < shape_a.first; i++) {
+	for (size_t i = 0; i < shape_a.first; i++)
+	{
 		std::valarray<T> temp(1,shape_b.second);
-		for (size_t j = 0; j < shape_b.second; j++) {
+		for (size_t j = 0; j < shape_b.second; j++)
+		{
 			temp[j] = h_C[i*shape_b.second + j];
 		}
 		C[i] = temp;
