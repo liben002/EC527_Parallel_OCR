@@ -1,6 +1,8 @@
 #include <cuda_runtime_api.h>
 #include <cuda.h>
 
+#define SHARED_MEM_TILE_WIDTH 16
+
 template <typename T>
 __global__ void CUDA_MAT_MULT(T *d_A, T *d_B, T *d_C, int A_rows, int A_cols, int B_rows, int B_cols, int C_rows, int C_cols) {
 
@@ -49,29 +51,29 @@ __global__ void CUDA_MAT_MULT_TILED(T* d_A, T* d_B, T* d_C, int A_rows, int A_co
 	}
 }
 
-__global__ void MatMul(float* A, float* B, float* C, int ARows, int ACols, int BRows, int BCols, int CRows, int CCols, const int TILE_WIDTH)
+__global__ void MatMul(float* A, float* B, float* C, int ARows, int ACols, int BRows, int BCols, int CRows, int CCols)
 {
 	float CValue = 0;
 
-	int Row = blockIdx.y*TILE_WIDTH + threadIdx.y;
-	int Col = blockIdx.x*TILE_WIDTH + threadIdx.x;
+	int Row = blockIdx.y*SHARED_MEM_TILE_WIDTH + threadIdx.y;
+	int Col = blockIdx.x*SHARED_MEM_TILE_WIDTH + threadIdx.x;
 
-	__shared__ float As[TILE_WIDTH][TILE_WIDTH];
-	__shared__ float Bs[TILE_WIDTH][TILE_WIDTH];
+	__shared__ float As[SHARED_MEM_TILE_WIDTH][SHARED_MEM_TILE_WIDTH];
+	__shared__ float Bs[SHARED_MEM_TILE_WIDTH]SHARED_MEM_TILE_WIDTH];
 
-	for (int k = 0; k < (TILE_WIDTH + ACols - 1)/TILE_WIDTH; k++) {
-		if (k*TILE_WIDTH + threadIdx.x < ACols && Row < ARows)
+	for (int k = 0; k < (SHARED_MEM_TILE_WIDTH + ACols - 1)/SHARED_MEM_TILE_WIDTH; k++) {
+		if (k*SHARED_MEM_TILE_WIDTH + threadIdx.x < ACols && Row < ARows)
 		{
-			As[threadIdx.y][threadIdx.x] = A[Row*ACols + k*TILE_WIDTH + threadIdx.x];
+			As[threadIdx.y][threadIdx.x] = A[Row*ACols + k*SHARED_MEM_TILE_WIDTH + threadIdx.x];
 		}
 		else
 		{
 			As[threadIdx.y][threadIdx.x] = 0.0;
 		}
 
-		if (k*TILE_WIDTH + threadIdx.y < BRows && Col < BCols)
+		if (k*SHARED_MEM_TILE_WIDTH + threadIdx.y < BRows && Col < BCols)
 		{
-			Bs[threadIdx.y][threadIdx.x] = B[(k*TILE_WIDTH + threadIdx.y)*BCols + Col];
+			Bs[threadIdx.y][threadIdx.x] = B[(k*SHARED_MEM_TILE_WIDTH + threadIdx.y)*BCols + Col];
 		}
 		else
 		{
@@ -80,7 +82,7 @@ __global__ void MatMul(float* A, float* B, float* C, int ARows, int ACols, int B
 
 		__syncthreads();
 
-		for (int n = 0; n < TILE_WIDTH; ++n)
+		for (int n = 0; n < SHARED_MEM_TILE_WIDTH; ++n)
 			CValue += As[threadIdx.y][n] * Bs[n][threadIdx.x];
 
 		__syncthreads();
