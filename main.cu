@@ -5,15 +5,18 @@
 #include <omp.h>
 
 #define EPOCHS 100
+#define START 100
+#define END 300
+#define STEP_SIZE 100
 
 /**
  * Function to test neural network
  * @returns none
  */
-static void test() {
+static void test(int row_length) {
 	// Creating network with 3 layers for "iris.csv"
 	// First layer neurons must match testing params
-	machine_learning::neural_network::NeuralNetwork myNN = machine_learning::neural_network::NeuralNetwork({ {4, "none"}, {600, "relu"}, {300, "sigmoid"} });
+	machine_learning::neural_network::NeuralNetwork myNN = machine_learning::neural_network::NeuralNetwork({ {4, "none"}, {row_length, "relu"}, {row_length, "sigmoid"} });
 
 	// Printing summary of model
 	myNN.summary();
@@ -35,15 +38,31 @@ static void test() {
  */
 int main() {
 
-	// start the timer
-	auto start = std::chrono::high_resolution_clock::now();  // Start clock
+	double duration_table[(END-START) / STEP_SIZE + 2][2]
 
-	test();
+	for (int i = START; i <= END; i+= STEP_SIZE)
+	{
+		duration_table[i/100 -1][0] = i;
+		// start the timer
+		auto start = std::chrono::high_resolution_clock::now();  // Start clock
 
-	// stop the timer
-	auto stop = std::chrono::high_resolution_clock::now();  // Stoping the clock
-	auto duration = std::chrono::duration_cast<std::chrono::microseconds>(stop - start);
+		test();
 
-	printf("Time for learning over %d epochs: %f seconds\n", EPOCHS, duration.count() / 1e6);
+		// stop the timer
+		auto stop = std::chrono::high_resolution_clock::now();  // Stoping the clock
+		auto duration = std::chrono::duration_cast<std::chrono::microseconds>(stop - start);
+
+		printf("Time for learning over %d epochs: %f seconds\n", EPOCHS, duration.count() / 1e6);
+		duration_table[i/100 -1][1] = duration.count() / 1e6;
+	}
+
+	printf("ROW_LENGTH, TIME\n");
+	for (int i = 0; i < (END-START) / STEP_SIZE + 2; i++)
+	{
+		printf("%.3f, %.3f\n", duration_table[i][0], duration_table[i][1]);
+	}
+
+	printf("DONE");
+
 	return 0;
 }
