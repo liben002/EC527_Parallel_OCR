@@ -59,7 +59,7 @@ __global__ void MatMul(float* A, float* B, float* C, int ARows, int ACols, int B
 	int Col = blockIdx.x*SHARED_MEM_TILE_WIDTH + threadIdx.x;
 
 	__shared__ float As[SHARED_MEM_TILE_WIDTH][SHARED_MEM_TILE_WIDTH];
-	__shared__ float Bs[SHARED_MEM_TILE_WIDTH]SHARED_MEM_TILE_WIDTH];
+	__shared__ float Bs[SHARED_MEM_TILE_WIDTH][SHARED_MEM_TILE_WIDTH];
 
 	for (int k = 0; k < (SHARED_MEM_TILE_WIDTH + ACols - 1)/SHARED_MEM_TILE_WIDTH; k++) {
 		if (k*SHARED_MEM_TILE_WIDTH + threadIdx.x < ACols && Row < ARows)
