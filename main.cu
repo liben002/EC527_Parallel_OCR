@@ -43,10 +43,11 @@ int main() {
 	for (int i = START; i <= END; i+= STEP_SIZE)
 	{
 		duration_table[i/100 -1][0] = i;
+		printf("Starting test with row_length of %d\n", i);
 		// start the timer
 		auto start = std::chrono::high_resolution_clock::now();  // Start clock
 
-		test();
+		test(i);
 
 		// stop the timer
 		auto stop = std::chrono::high_resolution_clock::now();  // Stoping the clock
