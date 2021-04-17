@@ -2,11 +2,10 @@
 #include <iostream>
 #include <time.h>
 #include <cassert>
-#include <omp.h>
 
 #define EPOCHS 100
 #define START 100
-#define END 300
+#define END 1500
 #define STEP_SIZE 100
 
 /**
@@ -38,7 +37,7 @@ static void test(int row_length) {
  */
 int main() {
 
-	double duration_table[(END-START) / STEP_SIZE + 2][2];
+	double duration_table[(END-START) / STEP_SIZE + 1][2];
 
 	for (int i = START; i <= END; i+= STEP_SIZE)
 	{
@@ -58,7 +57,7 @@ int main() {
 	}
 
 	printf("ROW_LENGTH, TIME\n");
-	for (int i = 0; i < (END-START) / STEP_SIZE + 2; i++)
+	for (int i = 0; i < (END-START) / STEP_SIZE + 1; i++)
 	{
 		printf("%.3f, %.3f\n", duration_table[i][0], duration_table[i][1]);
 	}
