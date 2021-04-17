@@ -5,7 +5,7 @@
 
 #define EPOCHS 100
 #define START 600
-#define END 1600
+#define END 600
 #define STEP_SIZE 100
 
 /**

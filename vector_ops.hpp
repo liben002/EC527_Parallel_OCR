@@ -21,8 +21,8 @@
 #include <cuda.h>
 #include "cuda_ops.cu"
 
-// #define TILED
-// #define TILE_DIM 16
+#define TILED
+#define TILE_WIDTH 16
 
 // #define DEBUG
 
@@ -596,7 +596,7 @@ std::vector<std::valarray<T>> multiply(const std::vector<std::valarray<T>> &A, c
 	err = cudaMemcpy(d_C, h_C, mat_C_size, cudaMemcpyHostToDevice);
 
 	#ifdef TILED
-		dim3 dimBlock(TILE_DIM, TILE_DIM);
+		dim3 dimBlock(TILE_WIDTH, TILE_WIDTH);
 		dim3 dimGrid((shape_b.second + dimBlock.x - 1)/dimBlock.x, (shape_a.first + dimBlock.y - 1)/dimBlock.y);
 	#else
 		dim3 dimBlock(32, 32);
@@ -608,7 +608,7 @@ std::vector<std::valarray<T>> multiply(const std::vector<std::valarray<T>> &A, c
 	#endif
 
 	#ifdef TILED
-		CUDA_MAT_MULT_TILED<<<dimGrid, dimBlock>>>(d_A, d_B, d_C, shape_a.first, shape_a.second, shape_b.first, shape_b.second, shape_a.first, shape_b.second, TILE_DIM);
+		CUDA_MAT_MULT_TILED<<<dimGrid, dimBlock>>>(d_A, d_B, d_C, shape_a.first, shape_a.second, shape_b.first, shape_b.second, shape_a.first, shape_b.second, TILE_WIDTH);
 	#else
 		CUDA_MAT_MULT<<<dimGrid, dimBlock>>>(d_A, d_B, d_C, shape_a.first, shape_a.second, shape_b.first, shape_b.second, shape_a.first, shape_b.second);
 	#endif
