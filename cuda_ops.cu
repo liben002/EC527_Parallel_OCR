@@ -34,15 +34,14 @@ __global__ void CUDA_MAT_MULT_NORMAL(T *d_A, T *d_B, T *d_C, int A_rows, int A_c
 template <typename T>
 __global__ void CUDA_MAT_MULT_TILED(T* d_A, T* d_B, T* d_C, int rows_A, int cols_A, int rows_B, int cols_B, int rows_C, int cols_C, int TILE_WIDTH) {
 
+	int row = blockIdx.y * TILE_WIDTH + threadIdx.y; // for d_A matrix
+	int col = blockIdx.x * TILE_WIDTH + threadIdx.x; // for d_B matrix
+
 	T c_val = 0;
 
-	int row = blockIdx.y * TILE_WIDTH + threadIdx.y;
-	int col = blockIdx.x * TILE_WIDTH + threadIdx.x;
-
-	if (row < rows_C && col < cols_C)
+	if (row < rows_C && col < cols_C) // only want rows and columns that fit within the resultant matrix, otherwise, doing extra work
 	{
-
-		for (int i = 0; i < (TILE_WIDTH + cols_A - 1)/TILE_WIDTH; i++)
+		for (int i = 0; i < (cols_A + TILE_WIDTH - 1)/TILE_WIDTH; i++)
 		{
 			for (int k = 0; k < TILE_WIDTH; k++)
 			{
@@ -53,7 +52,7 @@ __global__ void CUDA_MAT_MULT_TILED(T* d_A, T* d_B, T* d_C, int rows_A, int cols
 			}
 		}
 
-			d_C[((blockIdx.y * blockDim.y + threadIdx.y) * cols_C) + (blockIdx.x * blockDim.x) + threadIdx.x] = c_val;
+		d_C[((blockIdx.y * blockDim.y + threadIdx.y) * cols_C) + (blockIdx.x * blockDim.x) + threadIdx.x] = c_val;
 	}
 }
 
