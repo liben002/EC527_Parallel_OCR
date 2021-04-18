@@ -7,9 +7,9 @@
 #define SHARED_TILE_WIDTH 16
 
 template <typename T>
-__global__ void CUDA_MAT_MULT_NORMAL(T *A, T *B, T *C, int ARows, int ACols, int BRows, int BCols, int CRows, int CCols) {
+__global__ void CUDA_MAT_MULT_NORMAL(T *d_A, T *d_B, T *d_C, int ARows, int ACols, int BRows, int BCols, int CRows, int CCols) {
 
-	float CValue = 0;
+	float c_val = 0;
 
     int Row = blockIdx.y*blockDim.y + threadIdx.y;
     int Col = blockIdx.x*blockDim.x + threadIdx.x;
@@ -17,11 +17,16 @@ __global__ void CUDA_MAT_MULT_NORMAL(T *A, T *B, T *C, int ARows, int ACols, int
     for (int k = 0; k < ACols; k++) {
 
             if ((k < ACols && Row < ARows) && (k < BRows && Col < BCols))
-                CValue += A[Row*ACols + k] * B[(k)*BCols + Col];
+            {
+            	__syncthreads();
+                c_val += d_A[Row*ACols + k] * d_B[(k)*BCols + Col];
+                __syncthreads();
+            }
 
     }
 
-    if (Row < CRows && Col < CCols) C[((blockIdx.y * blockDim.y + threadIdx.y)*CCols)+(blockIdx.x*blockDim.x)+threadIdx.x]=CValue;
+    if (Row < CRows && Col < CCols)
+    	d_C[((blockIdx.y * blockDim.y + threadIdx.y)*CCols)+(blockIdx.x*blockDim.x)+threadIdx.x] = c_val;
 }
 
 template <typename T>
