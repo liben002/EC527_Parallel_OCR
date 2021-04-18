@@ -39,20 +39,21 @@ __global__ void CUDA_MAT_MULT_TILED(T* d_A, T* d_B, T* d_C, int rows_A, int cols
 	int row = blockIdx.y * TILE_WIDTH + threadIdx.y;
 	int col = blockIdx.x * TILE_WIDTH + threadIdx.x;
 
-	for (int i = 0; i < (TILE_WIDTH + cols_A - 1)/TILE_WIDTH; i++)
-	{
-		for (int k = 0; k < TILE_WIDTH; k++)
-		{
-			if ((i * TILE_WIDTH + k < cols_A && row < rows_A) && (i * TILE_WIDTH + k < rows_B && col < cols_B))
-			{
-				c_val += d_A[row * cols_A + i * TILE_WIDTH + k] * d_B[(i * TILE_WIDTH + k) * cols_B + col];
-			}
-		}
-	}
-
 	if (row < rows_C && col < cols_C)
 	{
-		d_C[((blockIdx.y * blockDim.y + threadIdx.y) * cols_C) + (blockIdx.x * blockDim.x) + threadIdx.x] = c_val;
+
+		for (int i = 0; i < (TILE_WIDTH + cols_A - 1)/TILE_WIDTH; i++)
+		{
+			for (int k = 0; k < TILE_WIDTH; k++)
+			{
+				if ((i * TILE_WIDTH + k < cols_A && row < rows_A) && (i * TILE_WIDTH + k < rows_B && col < cols_B))
+				{
+					c_val += d_A[row * cols_A + i * TILE_WIDTH + k] * d_B[(i * TILE_WIDTH + k) * cols_B + col];
+				}
+			}
+		}
+
+			d_C[((blockIdx.y * blockDim.y + threadIdx.y) * cols_C) + (blockIdx.x * blockDim.x) + threadIdx.x] = c_val;
 	}
 }
 
