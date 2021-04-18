@@ -7,26 +7,25 @@
 #define SHARED_TILE_WIDTH 16
 
 template <typename T>
-__global__ void CUDA_MAT_MULT_NORMAL(T *d_A, T *d_B, T *d_C, int ARows, int ACols, int BRows, int BCols, int CRows, int CCols) {
+__global__ void CUDA_MAT_MULT_NORMAL(T *d_A, T *d_B, T *d_C, int rows_A, int cols_A, int rows_B, int cols_B, int rows_C, int cols_C) {
+
+	int row = blockIdx.y * blockDim.y + threadIdx.y;
+	int col = blockIdx.x * blockDim.x + threadIdx.x;
 
 	float c_val = 0;
 
-    int Row = blockIdx.y*blockDim.y + threadIdx.y;
-    int Col = blockIdx.x*blockDim.x + threadIdx.x;
-
-    for (int k = 0; k < ACols; k++) {
-
-            if ((k < ACols && Row < ARows) && (k < BRows && Col < BCols))
-            {
-            	__syncthreads();
-                c_val += d_A[Row*ACols + k] * d_B[(k)*BCols + Col];
-                __syncthreads();
-            }
-
-    }
-
-    if (Row < CRows && Col < CCols)
-    	d_C[((blockIdx.y * blockDim.y + threadIdx.y)*CCols)+(blockIdx.x*blockDim.x)+threadIdx.x] = c_val;
+	if (row < rows_C && col < cols_C)
+	{
+		for (int k = 0; k < cols_A; k++) {
+				if ((k < cols_A && row < rows_A) && (k < rows_B && col < cols_B))
+				{
+					__syncthreads();
+					c_val += d_A[row * cols_A + k] * d_B[k * cols_B + col];
+					__syncthreads();
+				}
+		}
+		d_C[rows * cols_C + col] = c_val;
+	}
 }
 
 template <typename T>
