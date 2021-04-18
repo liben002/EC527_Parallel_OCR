@@ -7,7 +7,7 @@
 #define SHARED_TILE_WIDTH 16
 
 template <typename T>
-__global__ void CUDA_MAT_MULT_NORMAL(T *d_A, T *d_B, T *d_C, int ARows, int ACols, int BRows, int BCols, int CRows, int CCols) {
+__global__ void CUDA_MAT_MULT_NORMAL(T *A, T *B, T *C, int ARows, int ACols, int BRows, int BCols, int CRows, int CCols) {
 
 	float CValue = 0;
 
