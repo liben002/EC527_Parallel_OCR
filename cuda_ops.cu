@@ -38,7 +38,7 @@ __global__ void CUDA_MAT_MULT_TILED(T* d_A, T* d_B, T* d_C, int rows_A, int cols
 	int col = blockIdx.x * TILE_WIDTH + threadIdx.x; // for d_B matrix
 
 	int c_row = blockIdx.y * blockDim.y + threadIdx.y;
-	int c_col = blockIdx.x * blockDim.x + threadIdx.x
+	int c_col = blockIdx.x * blockDim.x + threadIdx.x;
 
 	T c_val = 0;
 
