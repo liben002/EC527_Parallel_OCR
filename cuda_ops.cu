@@ -7,7 +7,7 @@
 #define SHARED_TILE_WIDTH 16
 
 template <typename T>
-__global__ void CUDA_MAT_MULT_NORMAL(T *d_A, T *d_B, T *d_C, int rows_A, int cols_A, int rows_B, int cols_B, int rows_C, int cols_C) {
+__global__ void CUDA_MAT_MULT_NORMAL(T *d_A, T *d_B, T *d_C, int A_rows, int A_cols, int B_rows, int B_cols, int C_rows, int C_cols) {
 
 
 	// row used for d_A matric, col used for d_B matrix
