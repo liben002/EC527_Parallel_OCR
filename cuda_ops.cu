@@ -18,9 +18,9 @@ __global__ void CUDA_MAT_MULT_NORMAL(T *d_A, T *d_B, T *d_C, int A_rows, int A_c
 
 	for (int k = 0; k < (A_cols); k++) {
 			if ((k < A_cols && row < A_rows) && (k < B_rows && col < B_cols)){
-				__syncthreads();
+				// __syncthreads();
 				c_val += d_A[row * A_cols + k] * d_B[k * B_cols + col];
-				__syncthreads();
+				// __syncthreads();
 			}
 
 	}
