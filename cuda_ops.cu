@@ -57,7 +57,7 @@ __global__ void CUDA_MAT_MULT_TILED(T* d_A, T* d_B, T* d_C, int rows_A, int cols
 }
 
 template <typename T>
-__global__ void CUDA_MAT_MULT_SHARED_TILED(T *d_A, T *d_B, T *d_C, int rows_A, int cols_A, int rows_B, int cols_B, int rows_C, int cols_C)
+__global__ void CUDA_MAT_MULT_SHARED(T *d_A, T *d_B, T *d_C, int rows_A, int cols_A, int rows_B, int cols_B, int rows_C, int cols_C)
 {
 
 	int row = blockIdx.y*SHARED_TILE_WIDTH + threadIdx.y; // for d_A matrix
