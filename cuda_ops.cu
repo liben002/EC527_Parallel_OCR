@@ -16,16 +16,17 @@ __global__ void CUDA_MAT_MULT_NORMAL(T *d_A, T *d_B, T *d_C, int A_rows, int A_c
 	int row = blockIdx.y * blockDim.y + threadIdx.y;
 	int col = blockIdx.x * blockDim.x + threadIdx.x;
 
-	for (int k = 0; k < (A_cols); k++) {
-			if ((k < A_cols && row < A_rows) && (k < B_rows && col < B_cols)){
-				// __syncthreads();
-				c_val += d_A[row * A_cols + k] * d_B[k * B_cols + col];
-				// __syncthreads();
-			}
-
+	for (int i = 0; i < A_cols; i++) {
+		if ((i < A_cols && row < A_rows) && (i < B_rows && col < B_cols))
+		{
+			__syncthreads();
+			c_val += d_A[row * A_cols + i] * d_B[i * B_cols + col];
+			__syncthreads();
+		}
 	}
 
-	if (row < C_rows && col < C_cols){
+	if (row < C_rows && col < C_cols)
+	{
 		d_C[((blockIdx.y * blockDim.y + threadIdx.y) * C_cols) + (blockIdx.x * blockDim.x) + threadIdx.x] = c_val;
 	}
 }
