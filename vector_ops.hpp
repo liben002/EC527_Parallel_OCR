@@ -21,7 +21,10 @@
 #include <cuda.h>
 #include "cuda_ops.cu"
 
+// Select from TILED, SHARED, or neither (comment out both), neither defaults to regular global MMM
 // #define TILED
+// #define SHARED
+
 // #define TILE_WIDTH 16
 
 // #define DEBUG
@@ -595,7 +598,7 @@ std::vector<std::valarray<T>> multiply(const std::vector<std::valarray<T>> &A, c
 	err = cudaMemcpy(d_B, h_B, mat_B_size, cudaMemcpyHostToDevice);
 	err = cudaMemcpy(d_C, h_C, mat_C_size, cudaMemcpyHostToDevice);
 
-	#ifdef TILED
+	#if defined TILED || defined SHARED
 		dim3 dimBlock(TILE_WIDTH, TILE_WIDTH);
 		dim3 dimGrid((shape_b.second + dimBlock.x - 1)/dimBlock.x, (shape_a.first + dimBlock.y - 1)/dimBlock.y);
 	#else
@@ -607,7 +610,9 @@ std::vector<std::valarray<T>> multiply(const std::vector<std::valarray<T>> &A, c
 		printf("Launching CUDA kernel with %d blocks and %d threads.\n", dimGrid.x * dimGrid.y, dimBlock.x * dimBlock.y);
 	#endif
 
-	#ifdef TILED
+	#ifdef SHARED
+		CUDA_MAT_MULT_SHARED_NORMAL<<<dimGrid, dimBlock>>>(d_A, d_B, d_C, shape_a.first, shape_a.second, shape_b.first, shape_b.second, shape_a.first, shape_b.second);
+	#elif defined TILED
 		CUDA_MAT_MULT_TILED<<<dimGrid, dimBlock>>>(d_A, d_B, d_C, shape_a.first, shape_a.second, shape_b.first, shape_b.second, shape_a.first, shape_b.second, TILE_WIDTH);
 	#else
 		CUDA_MAT_MULT_NORMAL<<<dimGrid, dimBlock>>>(d_A, d_B, d_C, shape_a.first, shape_a.second, shape_b.first, shape_b.second, shape_a.first, shape_b.second);
