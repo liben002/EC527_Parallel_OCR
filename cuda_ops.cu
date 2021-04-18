@@ -4,82 +4,80 @@
 #include <cuda_runtime_api.h>
 #include <cuda.h>
 
-#define SHARED_TILE_WIDTH 16
+#define SHARED_MEM_TILE_WIDTH 16
 
 template <typename T>
-__global__ void CUDA_MAT_MULT_NORMAL(T *d_A, T *d_B, T *d_C, int rows_A, int cols_A, int rows_B, int cols_B, int rows_C, int cols_C) {
+__global__ void CUDA_MAT_MULT_NORMAL(T *d_A, T *d_B, T *d_C, int A_rows, int A_cols, int B_rows, int B_cols, int C_rows, int C_cols) {
+
+	T c_val = 0;
 
 	int row = blockIdx.y * blockDim.y + threadIdx.y;
 	int col = blockIdx.x * blockDim.x + threadIdx.x;
 
-	float c_val = 0;
-
-	if (row < rows_C && col < cols_C)
-	{
-		for (int k = 0; k < cols_A; k++) {
-				if ((k < cols_A && row < rows_A) && (k < rows_B && col < cols_B))
-				{
-					__syncthreads();
-					c_val += d_A[row * cols_A + k] * d_B[k * cols_B + col];
-					__syncthreads();
-				}
+	for (int i = 0; i < A_cols; i++) {
+		if ((i < A_cols && row < A_rows) && (i < B_rows && col < B_cols))
+		{
+			__syncthreads();
+			c_val += d_A[row * A_cols + i] * d_B[i * B_cols + col];
+			__syncthreads();
 		}
-		d_C[row * cols_C + col] = c_val;
+	}
+
+	if (row < C_rows && col < C_cols)
+	{
+		d_C[((blockIdx.y * blockDim.y + threadIdx.y) * C_cols) + (blockIdx.x * blockDim.x) + threadIdx.x] = c_val;
 	}
 }
 
 template <typename T>
-__global__ void CUDA_MAT_MULT_TILED(T* d_A, T* d_B, T* d_C, int rows_A, int cols_A, int rows_B, int cols_B, int rows_C, int cols_C, int TILE_WIDTH) {
-
-	int row = blockIdx.y * TILE_WIDTH + threadIdx.y; // for d_A matrix
-	int col = blockIdx.x * TILE_WIDTH + threadIdx.x; // for d_B matrix
-
-	int c_row = blockIdx.y * blockDim.y + threadIdx.y;
-	int c_col = blockIdx.x * blockDim.x + threadIdx.x;
+__global__ void CUDA_MAT_MULT_TILED(T* d_A, T* d_B, T* d_C, int A_rows, int A_cols, int B_rows, int B_cols, int C_rows, int C_cols, int TILE_WIDTH) {
 
 	T c_val = 0;
 
-	if (row < rows_C && col < cols_C) // only want rows and columns that fit within the resultant matrix, otherwise, doing extra work
+	int row = blockIdx.y * TILE_WIDTH + threadIdx.y;
+	int col = blockIdx.x * TILE_WIDTH + threadIdx.x;
+
+	for (int i = 0; i < (TILE_WIDTH + A_cols - 1)/TILE_WIDTH; i++)
 	{
-		for (int i = 0; i < (cols_A + TILE_WIDTH - 1)/TILE_WIDTH; i++)
+		for (int k = 0; k < TILE_WIDTH; k++)
 		{
-			for (int k = 0; k < TILE_WIDTH; k++)
+			if ((i * TILE_WIDTH + k < A_cols && row < A_rows) && (i * TILE_WIDTH + k < B_rows && col < B_cols))
 			{
-				if ((i * TILE_WIDTH + k < cols_A && row < rows_A) && (i * TILE_WIDTH + k < rows_B && col < cols_B)) // don't go overbounds since d_A and d_B are not necessarily the same shape
-				{
-					c_val += d_A[row * cols_A + i * TILE_WIDTH + k] * d_B[(i * TILE_WIDTH + k) * cols_B + col];
-				}
+				c_val += d_A[row * A_cols + i * TILE_WIDTH + k] * d_B[(i * TILE_WIDTH + k) * B_cols + col];
 			}
 		}
+	}
 
-		d_C[(c_row * cols_C) + c_col] = c_val;
+	if (row < C_rows && col < C_cols)
+	{
+		d_C[((blockIdx.y * blockDim.y + threadIdx.y) * C_cols) + (blockIdx.x * blockDim.x) + threadIdx.x] = c_val;
 	}
 }
 
 template <typename T>
-__global__ void CUDA_MAT_MULT_SHARED_TILED(T *d_A, T *d_B, T *d_C, int rows_A, int cols_A, int rows_B, int cols_B, int rows_C, int cols_C)
+__global__ void CUDA_MAT_MULT_SHARED_NORMAL(float* d_A, float* d_B, float* d_C, int A_rows, int A_cols, int B_rows, int B_cols, int C_rows, int C_cols)
 {
 	T c_val = 0;
 
-	int row = blockIdx.y*SHARED_TILE_WIDTH + threadIdx.y;
-	int col = blockIdx.x*SHARED_TILE_WIDTH + threadIdx.x;
+	int row = blockIdx.y*SHARED_MEM_TILE_WIDTH + threadIdx.y;
+	int col = blockIdx.x*SHARED_MEM_TILE_WIDTH + threadIdx.x;
 
-	__shared__ T s_A[SHARED_TILE_WIDTH][SHARED_TILE_WIDTH];
-	__shared__ T s_B[SHARED_TILE_WIDTH][SHARED_TILE_WIDTH];
+	__shared__ float s_A[SHARED_MEM_TILE_WIDTH][SHARED_MEM_TILE_WIDTH];
+	__shared__ float s_B[SHARED_MEM_TILE_WIDTH][SHARED_MEM_TILE_WIDTH];
 
-	for (int k = 0; k < (SHARED_TILE_WIDTH + cols_A - 1)/SHARED_TILE_WIDTH; k++) {
-		if (k*SHARED_TILE_WIDTH + threadIdx.x < cols_A && row < rows_A)
+	for (int k = 0; k < (SHARED_MEM_TILE_WIDTH + A_cols - 1)/SHARED_MEM_TILE_WIDTH; k++) {
+		if (k*SHARED_MEM_TILE_WIDTH + threadIdx.x < A_cols && row < A_rows)
 		{
-			s_A[threadIdx.y][threadIdx.x] = d_A[row*cols_A + k*SHARED_TILE_WIDTH + threadIdx.x];
+			s_A[threadIdx.y][threadIdx.x] = d_A[row*A_cols + k*SHARED_MEM_TILE_WIDTH + threadIdx.x];
 		}
 		else
 		{
 			s_A[threadIdx.y][threadIdx.x] = 0.0;
 		}
 
-		if (k*SHARED_TILE_WIDTH + threadIdx.y < rows_B && col < cols_B)
+		if (k*SHARED_MEM_TILE_WIDTH + threadIdx.y < B_rows && col < B_cols)
 		{
-			s_B[threadIdx.y][threadIdx.x] = d_B[(k*SHARED_TILE_WIDTH + threadIdx.y)*cols_B + col];
+			s_B[threadIdx.y][threadIdx.x] = d_B[(k*SHARED_MEM_TILE_WIDTH + threadIdx.y)*B_cols + col];
 		}
 		else
 		{
@@ -88,14 +86,14 @@ __global__ void CUDA_MAT_MULT_SHARED_TILED(T *d_A, T *d_B, T *d_C, int rows_A, i
 
 		__syncthreads();
 
-		for (int n = 0; n < SHARED_TILE_WIDTH; ++n)
+		for (int n = 0; n < SHARED_MEM_TILE_WIDTH; ++n)
 			c_val += s_A[threadIdx.y][n] * s_B[n][threadIdx.x];
 
 		__syncthreads();
 	}
 
-	if (row < rows_C && col < cols_C)
+	if (row < C_rows && col < C_cols)
 	{
-		d_C[((blockIdx.y * blockDim.y + threadIdx.y)*cols_C) + (blockIdx.x * blockDim.x)+ threadIdx.x] = c_val;
+		d_C[((blockIdx.y * blockDim.y + threadIdx.y)*C_cols) + (blockIdx.x * blockDim.x)+ threadIdx.x] = c_val;
 	}
 }
