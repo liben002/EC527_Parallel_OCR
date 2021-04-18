@@ -25,7 +25,7 @@
 // #define TILED
 // #define SHARED
 
-#define TILE_WIDTH 16
+// #define TILE_WIDTH 16
 
 // #define DEBUG
 
