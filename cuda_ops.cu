@@ -1,10 +1,13 @@
+// CUDA operations fro matrix multiply
+// References: 	https://stackoverflow.com/questions/35799478/how-to-implement-a-nxm-cuda-matrix-multiplication
+// 				https://stackoverflow.com/questions/18997773/non-square-matrix-multiplication-in-cuda
 #include <cuda_runtime_api.h>
 #include <cuda.h>
 
 #define SHARED_MEM_TILE_WIDTH 16
 
 template <typename T>
-__global__ void CUDA_MAT_MULT(T *d_A, T *d_B, T *d_C, int A_rows, int A_cols, int B_rows, int B_cols, int C_rows, int C_cols) {
+__global__ void CUDA_MAT_MULT_NORMAL(T *d_A, T *d_B, T *d_C, int A_rows, int A_cols, int B_rows, int B_cols, int C_rows, int C_cols) {
 
 	T c_val = 0;
 
@@ -51,45 +54,46 @@ __global__ void CUDA_MAT_MULT_TILED(T* d_A, T* d_B, T* d_C, int A_rows, int A_co
 	}
 }
 
-__global__ void MatMul(float* A, float* B, float* C, int ARows, int ACols, int BRows, int BCols, int CRows, int CCols)
+template <typename T>
+__global__ void CUDA_MAT_MULT_SHARED_NORMAL(float* d_A, float* d_B, float* d_C, int A_rows, int A_cols, int B_rows, int B_cols, int C_rows, int C_cols)
 {
-	float CValue = 0;
+	T c_val = 0;
 
-	int Row = blockIdx.y*SHARED_MEM_TILE_WIDTH + threadIdx.y;
-	int Col = blockIdx.x*SHARED_MEM_TILE_WIDTH + threadIdx.x;
+	int row = blockIdx.y*SHARED_MEM_TILE_WIDTH + threadIdx.y;
+	int col = blockIdx.x*SHARED_MEM_TILE_WIDTH + threadIdx.x;
 
-	__shared__ float As[SHARED_MEM_TILE_WIDTH][SHARED_MEM_TILE_WIDTH];
-	__shared__ float Bs[SHARED_MEM_TILE_WIDTH][SHARED_MEM_TILE_WIDTH];
+	__shared__ float s_A[SHARED_MEM_TILE_WIDTH][SHARED_MEM_TILE_WIDTH];
+	__shared__ float s_B[SHARED_MEM_TILE_WIDTH][SHARED_MEM_TILE_WIDTH];
 
-	for (int k = 0; k < (SHARED_MEM_TILE_WIDTH + ACols - 1)/SHARED_MEM_TILE_WIDTH; k++) {
-		if (k*SHARED_MEM_TILE_WIDTH + threadIdx.x < ACols && Row < ARows)
+	for (int k = 0; k < (SHARED_MEM_TILE_WIDTH + A_cols - 1)/SHARED_MEM_TILE_WIDTH; k++) {
+		if (k*SHARED_MEM_TILE_WIDTH + threadIdx.x < A_cols && row < A_rows)
 		{
-			As[threadIdx.y][threadIdx.x] = A[Row*ACols + k*SHARED_MEM_TILE_WIDTH + threadIdx.x];
+			s_A[threadIdx.y][threadIdx.x] = d_A[row*A_cols + k*SHARED_MEM_TILE_WIDTH + threadIdx.x];
 		}
 		else
 		{
-			As[threadIdx.y][threadIdx.x] = 0.0;
+			s_A[threadIdx.y][threadIdx.x] = 0.0;
 		}
 
-		if (k*SHARED_MEM_TILE_WIDTH + threadIdx.y < BRows && Col < BCols)
+		if (k*SHARED_MEM_TILE_WIDTH + threadIdx.y < d_B_rows && col < B_cols)
 		{
-			Bs[threadIdx.y][threadIdx.x] = B[(k*SHARED_MEM_TILE_WIDTH + threadIdx.y)*BCols + Col];
+			s_B[threadIdx.y][threadIdx.x] = d_B[(k*SHARED_MEM_TILE_WIDTH + threadIdx.y)*B_cols + col];
 		}
 		else
 		{
-			Bs[threadIdx.y][threadIdx.x] = 0.0;
+			s_B[threadIdx.y][threadIdx.x] = 0.0;
 		}
 
 		__syncthreads();
 
 		for (int n = 0; n < SHARED_MEM_TILE_WIDTH; ++n)
-			CValue += As[threadIdx.y][n] * Bs[n][threadIdx.x];
+			c_val += s_A[threadIdx.y][n] * s_B[n][threadIdx.x];
 
 		__syncthreads();
 	}
 
-	if (Row < CRows && Col < CCols)
+	if (row < C_rows && col < C_cols)
 	{
-		C[((blockIdx.y * blockDim.y + threadIdx.y)*CCols) + (blockIdx.x * blockDim.x)+ threadIdx.x] = CValue;
+		d_C[((blockIdx.y * blockDim.y + threadIdx.y)*C_cols) + (blockIdx.x * blockDim.x)+ threadIdx.x] = c_val;
 	}
 }
