@@ -37,6 +37,9 @@ __global__ void CUDA_MAT_MULT_TILED(T* d_A, T* d_B, T* d_C, int rows_A, int cols
 	int row = blockIdx.y * TILE_WIDTH + threadIdx.y; // for d_A matrix
 	int col = blockIdx.x * TILE_WIDTH + threadIdx.x; // for d_B matrix
 
+	int c_row = blockIdx.y * blockDim.y + threadIdx.y;
+	int c_col = blockIdx.x * blockDim.x + threadIdx.x
+
 	T c_val = 0;
 
 	if (row < rows_C && col < cols_C) // only want rows and columns that fit within the resultant matrix, otherwise, doing extra work
@@ -52,7 +55,7 @@ __global__ void CUDA_MAT_MULT_TILED(T* d_A, T* d_B, T* d_C, int rows_A, int cols
 			}
 		}
 
-		d_C[((blockIdx.y * blockDim.y + threadIdx.y) * cols_C) + (blockIdx.x * blockDim.x) + threadIdx.x] = c_val;
+		d_C[(c_row * cols_C) + c_col] = c_val;
 	}
 }
 
