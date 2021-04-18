@@ -11,23 +11,22 @@ __global__ void CUDA_MAT_MULT_NORMAL(T *d_A, T *d_B, T *d_C, int rows_A, int col
 
 
 	// row used for d_A matric, col used for d_B matrix
+	T c_val = 0;
+
 	int row = blockIdx.y * blockDim.y + threadIdx.y;
 	int col = blockIdx.x * blockDim.x + threadIdx.x;
 
-	T c_val = 0;
+	for (int k = 0; k < (A_cols); k++) {
+			if ((k < A_cols && row < A_rows) && (k < B_rows && col < B_cols)){
+				__syncthreads();
+				c_val += d_A[row * A_cols + k] * d_B[k * B_cols + col];
+				__syncthreads();
+			}
 
-	for (int i = 0; i < cols_A; i++) { // bounds are the colums in d_A (same as the row length of d_A)
-		if ((i < cols_A && row < rows_A) && (i < rows_B && col < cols_B)) // explicitly check boundaries of each row multiplication
-		{
-			__syncthreads();
-			c_val += d_A[row * cols_A + i] * d_B[i * cols_B + col]; // regular multiplication of rows * cols, boundary checking done earlier!
-			__syncthreads();
-		}
 	}
 
-	if (row < rows_C && col < cols_C) // only want to save values that fit in the d_C matrix
-	{
-		d_C[((blockIdx.y * blockDim.y + threadIdx.y) * cols_C) + (blockIdx.x * blockDim.x) + threadIdx.x] = c_val;
+	if (row < C_rows && col < C_cols){
+		d_C[((blockIdx.y * blockDim.y + threadIdx.y) * C_cols) + (blockIdx.x * blockDim.x) + threadIdx.x] = c_val;
 	}
 }
 
