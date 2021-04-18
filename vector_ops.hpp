@@ -599,7 +599,6 @@ std::vector<std::valarray<T>> multiply(const std::vector<std::valarray<T>> &A, c
 	err = cudaMemcpy(d_C, h_C, mat_C_size, cudaMemcpyHostToDevice);
 
 	#if defined TILED || defined SHARED
-		printf("TILES SHARED");
 		dim3 dimBlock(TILE_WIDTH, TILE_WIDTH);
 		dim3 dimGrid((shape_b.second + dimBlock.x - 1)/dimBlock.x, (shape_a.first + dimBlock.y - 1)/dimBlock.y);
 	#else
