@@ -24,7 +24,7 @@ __global__ void CUDA_MAT_MULT_NORMAL(T *d_A, T *d_B, T *d_C, int rows_A, int col
 					__syncthreads();
 				}
 		}
-		d_C[rows * cols_C + col] = c_val;
+		d_C[row * cols_C + col] = c_val;
 	}
 }
 
