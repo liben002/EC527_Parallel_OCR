@@ -603,7 +603,6 @@ std::vector<std::valarray<T>> multiply(const std::vector<std::valarray<T>> &A, c
 		dim3 dimBlock(TILE_WIDTH, TILE_WIDTH);
 		dim3 dimGrid((shape_b.second + dimBlock.x - 1)/dimBlock.x, (shape_a.first + dimBlock.y - 1)/dimBlock.y);
 	#else
-		printf("GLOBAL");
 		dim3 dimBlock(32, 32);
 		dim3 dimGrid(16, 16);
 	#endif
@@ -617,7 +616,6 @@ std::vector<std::valarray<T>> multiply(const std::vector<std::valarray<T>> &A, c
 	#elif TILED
 		CUDA_MAT_MULT_TILED<<<dimGrid, dimBlock>>>(d_A, d_B, d_C, shape_a.first, shape_a.second, shape_b.first, shape_b.second, shape_a.first, shape_b.second, TILE_WIDTH);
 	#else
-		printf("global");
 		CUDA_MAT_MULT_NORMAL<<<dimGrid, dimBlock>>>(d_A, d_B, d_C, shape_a.first, shape_a.second, shape_b.first, shape_b.second, shape_a.first, shape_b.second);
 	#endif
 
