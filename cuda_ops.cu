@@ -55,15 +55,15 @@ __global__ void CUDA_MAT_MULT_TILED(T* d_A, T* d_B, T* d_C, int A_rows, int A_co
 }
 
 template <typename T>
-__global__ void CUDA_MAT_MULT_SHARED_NORMAL(float* d_A, float* d_B, float* d_C, int A_rows, int A_cols, int B_rows, int B_cols, int C_rows, int C_cols)
+__global__ void CUDA_MAT_MULT_SHARED_NORMAL(T* d_A, T* d_B, T* d_C, int A_rows, int A_cols, int B_rows, int B_cols, int C_rows, int C_cols)
 {
 	T c_val = 0;
 
 	int row = blockIdx.y*SHARED_MEM_TILE_WIDTH + threadIdx.y;
 	int col = blockIdx.x*SHARED_MEM_TILE_WIDTH + threadIdx.x;
 
-	__shared__ float s_A[SHARED_MEM_TILE_WIDTH][SHARED_MEM_TILE_WIDTH];
-	__shared__ float s_B[SHARED_MEM_TILE_WIDTH][SHARED_MEM_TILE_WIDTH];
+	__shared__ T s_A[SHARED_MEM_TILE_WIDTH][SHARED_MEM_TILE_WIDTH];
+	__shared__ T s_B[SHARED_MEM_TILE_WIDTH][SHARED_MEM_TILE_WIDTH];
 
 	for (int k = 0; k < (SHARED_MEM_TILE_WIDTH + A_cols - 1)/SHARED_MEM_TILE_WIDTH; k++) {
 		if (k*SHARED_MEM_TILE_WIDTH + threadIdx.x < A_cols && row < A_rows)
