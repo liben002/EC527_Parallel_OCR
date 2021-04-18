@@ -598,26 +598,31 @@ std::vector<std::valarray<T>> multiply(const std::vector<std::valarray<T>> &A, c
 	err = cudaMemcpy(d_B, h_B, mat_B_size, cudaMemcpyHostToDevice);
 	err = cudaMemcpy(d_C, h_C, mat_C_size, cudaMemcpyHostToDevice);
 
-	#if defined TILED || defined SHARED
-		printf("TILES SHARED");
-		dim3 dimBlock(TILE_WIDTH, TILE_WIDTH);
-		dim3 dimGrid((shape_b.second + dimBlock.x - 1)/dimBlock.x, (shape_a.first + dimBlock.y - 1)/dimBlock.y);
-	#else
-		dim3 dimBlock(32, 32);
-		dim3 dimGrid(16, 16);
-	#endif
+	// #if defined TILED || defined SHARED
+	// 	printf("TILES SHARED");
+	// 	dim3 dimBlock(TILE_WIDTH, TILE_WIDTH);
+	// 	dim3 dimGrid((shape_b.second + dimBlock.x - 1)/dimBlock.x, (shape_a.first + dimBlock.y - 1)/dimBlock.y);
+	// #else
+	// 	dim3 dimBlock(32, 32);
+	// 	dim3 dimGrid(16, 16);
+	// #endif
 
-	#ifdef DEBUG
-		printf("Launching CUDA kernel with %d blocks and %d threads.\n", dimGrid.x * dimGrid.y, dimBlock.x * dimBlock.y);
-	#endif
+	// #ifdef DEBUG
+	// 	printf("Launching CUDA kernel with %d blocks and %d threads.\n", dimGrid.x * dimGrid.y, dimBlock.x * dimBlock.y);
+	// #endif
 
-	#ifdef SHARED
-		CUDA_MAT_MULT_SHARED_NORMAL<<<dimGrid, dimBlock>>>(d_A, d_B, d_C, shape_a.first, shape_a.second, shape_b.first, shape_b.second, shape_a.first, shape_b.second);
-	#elif TILED
-		CUDA_MAT_MULT_TILED<<<dimGrid, dimBlock>>>(d_A, d_B, d_C, shape_a.first, shape_a.second, shape_b.first, shape_b.second, shape_a.first, shape_b.second, TILE_WIDTH);
-	#else
-		CUDA_MAT_MULT_NORMAL<<<dimGrid, dimBlock>>>(d_A, d_B, d_C, shape_a.first, shape_a.second, shape_b.first, shape_b.second, shape_a.first, shape_b.second);
-	#endif
+	// #ifdef SHARED
+	// 	CUDA_MAT_MULT_SHARED_NORMAL<<<dimGrid, dimBlock>>>(d_A, d_B, d_C, shape_a.first, shape_a.second, shape_b.first, shape_b.second, shape_a.first, shape_b.second);
+	// #elif TILED
+	// 	CUDA_MAT_MULT_TILED<<<dimGrid, dimBlock>>>(d_A, d_B, d_C, shape_a.first, shape_a.second, shape_b.first, shape_b.second, shape_a.first, shape_b.second, TILE_WIDTH);
+	// #else
+	// 	CUDA_MAT_MULT_NORMAL<<<dimGrid, dimBlock>>>(d_A, d_B, d_C, shape_a.first, shape_a.second, shape_b.first, shape_b.second, shape_a.first, shape_b.second);
+	// #endif
+
+	dim3 dimBlock(32, 32);
+	dim3 dimGrid(16, 16);
+
+	CUDA_MAT_MULT_NORMAL<<<dimGrid, dimBlock>>>(d_A, d_B, d_C, shape_a.first, shape_a.second, shape_b.first, shape_b.second, shape_a.first, shape_b.second);
 
 	err = cudaGetLastError();
 
