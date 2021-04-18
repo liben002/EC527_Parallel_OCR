@@ -48,7 +48,7 @@ __global__ void CUDA_MAT_MULT_TILED(T* d_A, T* d_B, T* d_C, int rows_A, int cols
 		{
 			for (int k = 0; k < TILE_WIDTH; k++)
 			{
-				if ((i * TILE_WIDTH + k < cols_A && row < rows_A) && (i * TILE_WIDTH + k < rows_B && col < cols_B))
+				if ((i * TILE_WIDTH + k < cols_A && row < rows_A) && (i * TILE_WIDTH + k < rows_B && col < cols_B)) // don't go overbounds since d_A and d_B are not necessarily the same shape
 				{
 					c_val += d_A[row * cols_A + i * TILE_WIDTH + k] * d_B[(i * TILE_WIDTH + k) * cols_B + col];
 				}
