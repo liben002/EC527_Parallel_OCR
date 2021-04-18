@@ -17,7 +17,7 @@ __global__ void CUDA_MAT_MULT_NORMAL(T *d_A, T *d_B, T *d_C, int rows_A, int col
 	T c_val = 0;
 
 	for (int i = 0; i < cols_A; i++) { // bounds are the colums in d_A (same as the row length of d_A)
-		if ((row < rows_A) && (i < rows_B && col < cols_B)) // explicitly check boundaries of each row multiplication
+		if ((i < cols_A && row < rows_A) && (i < rows_B && col < cols_B)) // explicitly check boundaries of each row multiplication
 		{
 			__syncthreads();
 			c_val += d_A[row * cols_A + i] * d_B[i * cols_B + col]; // regular multiplication of rows * cols, boundary checking done earlier!
