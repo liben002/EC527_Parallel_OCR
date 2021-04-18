@@ -9,25 +9,25 @@
 template <typename T>
 __global__ void CUDA_MAT_MULT_NORMAL(T *d_A, T *d_B, T *d_C, int A_rows, int A_cols, int B_rows, int B_cols, int C_rows, int C_cols) {
 
-
-	// row used for d_A matric, col used for d_B matrix
-	T c_val = 0;
-
 	int row = blockIdx.y * blockDim.y + threadIdx.y;
 	int col = blockIdx.x * blockDim.x + threadIdx.x;
 
+	T c_val = 0;
+
+	__syncthreads();
 	for (int i = 0; i < A_cols; i++) {
 		if ((i < A_cols && row < A_rows) && (i < B_rows && col < B_cols))
 		{
-			__syncthreads();
+			
 			c_val += d_A[row * A_cols + i] * d_B[i * B_cols + col];
-			__syncthreads();
+			
 		}
 	}
+	__syncthreads();
 
 	if (row < C_rows && col < C_cols)
 	{
-		d_C[((blockIdx.y * blockDim.y + threadIdx.y) * C_cols) + (blockIdx.x * blockDim.x) + threadIdx.x] = c_val;
+		d_C[(row * C_cols) + col] = c_val;
 	}
 }
 
