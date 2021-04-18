@@ -75,7 +75,7 @@ __global__ void CUDA_MAT_MULT_SHARED_NORMAL(float* d_A, float* d_B, float* d_C, 
 			s_A[threadIdx.y][threadIdx.x] = 0.0;
 		}
 
-		if (k*SHARED_MEM_TILE_WIDTH + threadIdx.y < d_B_rows && col < B_cols)
+		if (k*SHARED_MEM_TILE_WIDTH + threadIdx.y < B_rows && col < B_cols)
 		{
 			s_B[threadIdx.y][threadIdx.x] = d_B[(k*SHARED_MEM_TILE_WIDTH + threadIdx.y)*B_cols + col];
 		}
