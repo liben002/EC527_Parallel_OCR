@@ -304,10 +304,10 @@ std::vector<std::vector<std::valarray<T>>> minmax_scaler(const std::vector<std::
 	}
 
 	int length = B.size();
-
+	T min, max;
 	for (size_t i = 0; i < shape.second; i++)
 	{
-		T min = B[0][0][i], max = B[0][0][i];
+		min = B[0][0][i], max = B[0][0][i];
 		for (size_t j = 0; j < length; j++)
 		{
 			// Updating minimum and maximum values
