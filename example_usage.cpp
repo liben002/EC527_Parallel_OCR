@@ -2,12 +2,14 @@
 #include <iostream>
 #include <time.h>
 #include <cassert>
+#ifdef _OPENMP
 #include <omp.h>
+#endif
 
 #define EPOCHS 100
 #define THREADS 4
 
-int clock_gettime(clockid_t clk_id, struct timespec *tp);
+// int clock_gettime(clockid_t clk_id, struct timespec *tp);
 
 double interval(struct timespec start, struct timespec end)
 {
@@ -22,6 +24,7 @@ double interval(struct timespec start, struct timespec end)
 	return (((double)temp.tv_sec) + ((double)temp.tv_nsec)*1.0e-9);
 }
 
+#ifdef _OPENMP
 void detect_threads_setting()
 {
 	long int i, ognt;
@@ -53,6 +56,7 @@ void detect_threads_setting()
 
 	printf("Using %d threads for OpenMP\n", ognt);
 }
+#endif
 
 /**
  * Function to test neural network
@@ -61,7 +65,9 @@ void detect_threads_setting()
 static void test() {
 	// Creating network with 3 layers for "iris.csv"
 	// First layer neurons must match testing params
-	machine_learning::neural_network::NeuralNetwork myNN = machine_learning::neural_network::NeuralNetwork({ {4, "none"}, {600, "relu"}, {300, "sigmoid"} });
+		machine_learning::neural_network::NeuralNetwork myNN =
+			machine_learning::neural_network::NeuralNetwork(
+				{{4, "none"}, {60, "relu"}, {30, "sigmoid"}});
 
 	// Printing summary of model
 	myNN.summary();
@@ -84,8 +90,9 @@ static void test() {
 int main() {
 
 	// struct timespec time_start_CPU, time_end_CPU;
-
+	#ifdef _OPENMP
 	detect_threads_setting();
+	#endif
 
 	// start the timer
 	// clock_gettime(CLOCK_PROCESS_CPUTIME_ID, &time_start_CPU);
