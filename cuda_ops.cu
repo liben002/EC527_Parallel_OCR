@@ -4,7 +4,7 @@
 #include <cuda_runtime_api.h>
 #include <cuda.h>
 
-#define SHARED_TILE_WIDTH 32
+#define SHARED_TILE_WIDTH 16
 
 template <typename T>
 __global__ void CUDA_MAT_MULT_NORMAL(T *d_A, T *d_B, T *d_C, int rows_A, int cols_A, int rows_B, int cols_B, int rows_C, int cols_C) {
