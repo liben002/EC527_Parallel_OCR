@@ -4,8 +4,8 @@
 #include <cassert>
 
 #define EPOCHS 100
-#define START 100
-#define END 100
+#define START 60
+#define END 60
 #define STEP_SIZE 100
 
 /**
@@ -15,7 +15,7 @@
 static void test(int row_length) {
 	// Creating network with 3 layers for "iris.csv"
 	// First layer neurons must match testing params
-	machine_learning::neural_network::NeuralNetwork myNN = machine_learning::neural_network::NeuralNetwork({ {784, "none"}, {row_length, "relu"}, {row_length, "sigmoid"} });
+	machine_learning::neural_network::NeuralNetwork myNN = machine_learning::neural_network::NeuralNetwork({ {784, "none"}, {row_length, "relu"}, {10, "sigmoid"} });
 
 	// Printing summary of model
 	myNN.summary();
