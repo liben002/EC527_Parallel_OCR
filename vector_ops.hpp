@@ -380,7 +380,6 @@ std::vector<std::valarray<T>> operator*(const std::vector<std::valarray<T>> &A, 
 	std::vector<std::valarray<double>> B = A; // New vector to store resultant vector
 
 	int length = B.size();
-	#pragma omp parallel for
 	for (int i = 0 ; i < length; i++) {  // For every row in vector
 		B[i] = B[i] * val;     // Multiply row with scaler
 	}
@@ -407,7 +406,6 @@ std::vector<std::valarray<T>> operator/(const std::vector<std::valarray<T>> &A, 
 	std::vector<std::valarray<double>> B = A; // New vector to store resultant vector
 
 	int length = B.size();
-	#pragma omp parallel for
 	for (int i = 0 ; i < length; i++) {  // For every row in vector
 		B[i] = B[i] / val;     // Divide row with scaler
 	}
