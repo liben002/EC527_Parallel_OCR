@@ -355,7 +355,7 @@ size_t argmax(const std::vector<std::valarray<T>> &A)
 template <typename T>
 std::vector<std::valarray<T>> apply_function(const std::vector<std::valarray<T>> &A, T (*func)(const T &))
 {
-	std::vector<std::valarray<double>> B = A; // New vector to store resultant vector
+	std::vector<std::valarray<T>> B = A; // New vector to store resultant vector
 
 	int length = B.size();
 	for (int i = 0 ; i < length; i++) {     // For every row in vector
@@ -375,7 +375,7 @@ std::vector<std::valarray<T>> apply_function(const std::vector<std::valarray<T>>
 template <typename T>
 std::vector<std::valarray<T>> operator*(const std::vector<std::valarray<T>> &A, const T &val)
 {
-	std::vector<std::valarray<double>> B = A; // New vector to store resultant vector
+	std::vector<std::valarray<T>> B = A; // New vector to store resultant vector
 
 	for (auto &b : B) {  // For every row in vector
 		b = b * val;     // Multiply row with scaler
@@ -396,7 +396,7 @@ std::vector<std::valarray<T>> operator*(const std::vector<std::valarray<T>> &A, 
 template <typename T>
 std::vector<std::valarray<T>> operator/(const std::vector<std::valarray<T>> &A, const T &val)
 {
-	std::vector<std::valarray<double>> B = A; // New vector to store resultant vector
+	std::vector<std::valarray<T>> B = A; // New vector to store resultant vector
 	for (auto &b : B) { // For every row in vector
 		b = b / val; // Divide row with scaler
 	}
