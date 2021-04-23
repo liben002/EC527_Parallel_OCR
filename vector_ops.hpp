@@ -600,7 +600,8 @@ std::vector<std::valarray<T>> multiply(const std::vector<std::valarray<T>> &A, c
 
 	#if defined TILED || defined SHARED
 		dim3 dimBlock(TILE_WIDTH, TILE_WIDTH);
-		dim3 dimGrid((shape_b.second + dimBlock.x - 1)/dimBlock.x, (shape_a.first + dimBlock.y - 1)/dimBlock.y);
+		// dim3 dimGrid((shape_b.second + dimBlock.x - 1)/dimBlock.x, (shape_a.first + dimBlock.y - 1)/dimBlock.y);
+		dim3 dimGrid((shape_a.first + dimBlock.x - 1)/dimBlock.x, (shape_b.second + dimBlock.y - 1)/dimBlock.y);
 	#else
 		dim3 dimBlock(32, 32);
 		dim3 dimGrid(16, 16);

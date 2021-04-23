@@ -16,11 +16,11 @@ __global__ void CUDA_MAT_MULT_NORMAL(T *d_A, T *d_B, T *d_C, int rows_A, int col
 
 	if (row < rows_C && col < cols_C) // only want rows and columns that fit within the resultant matrix, otherwise, doing extra work
 	{
-		for (int k = 0; k < cols_A; k++) {
-			if (row < rows_A && (k < rows_B && col < cols_B)) // explicitly check bounds
+		for (int i = 0; i < cols_A; i++) {
+			if (row < rows_A && (i < rows_B && col < cols_B)) // explicitly check bounds
 			{
 				__syncthreads();
-				c_val += d_A[row * cols_A + k] * d_B[k * cols_B + col];
+				c_val += d_A[row * cols_A + i] * d_B[i * cols_B + col];
 				__syncthreads();
 			}
 		}
@@ -31,11 +31,17 @@ __global__ void CUDA_MAT_MULT_NORMAL(T *d_A, T *d_B, T *d_C, int rows_A, int col
 template <typename T>
 __global__ void CUDA_MAT_MULT_TILED(T *d_A, T *d_B, T *d_C, int rows_A, int cols_A, int rows_B, int cols_B, int rows_C, int cols_C, int TILE_WIDTH) {
 
-	int row = blockIdx.y * TILE_WIDTH + threadIdx.y; // for d_A matrix
-	int col = blockIdx.x * TILE_WIDTH + threadIdx.x; // for d_B matrix
+	// int row = blockIdx.y * TILE_WIDTH + threadIdx.y; // for d_A matrix
+	// int col = blockIdx.x * TILE_WIDTH + threadIdx.x; // for d_B matrix
 
-	int c_row = blockIdx.y * blockDim.y + threadIdx.y;
-	int c_col = blockIdx.x * blockDim.x + threadIdx.x;
+	// int c_row = blockIdx.y * blockDim.y + threadIdx.y;
+	// int c_col = blockIdx.x * blockDim.x + threadIdx.x;
+
+	int row = blockIdx.x * TILE_WIDTH + threadIdx.x; // for d_A matrix
+	int col = blockIdx.y * TILE_WIDTH + threadIdx.y; // for d_B matrix
+
+	int c_row = blockIdx.x * blockDim.x + threadIdx.x;
+	int c_col = blockIdx.y * blockDim.y + threadIdx.y;
 
 	T c_val = 0;
 
@@ -43,11 +49,11 @@ __global__ void CUDA_MAT_MULT_TILED(T *d_A, T *d_B, T *d_C, int rows_A, int cols
 	{
 		for (int i = 0; i < (cols_A + TILE_WIDTH - 1)/TILE_WIDTH; i++)
 		{
-			for (int k = 0; k < TILE_WIDTH; k++)
+			for (int j = 0; j < TILE_WIDTH; j++)
 			{
-				if ((i * TILE_WIDTH + k < cols_A && row < rows_A) && (i * TILE_WIDTH + k < rows_B && col < cols_B)) // don't go overbounds since d_A and d_B are not necessarily the same shape
+				if ((i * TILE_WIDTH + j < cols_A && row < rows_A) && (i * TILE_WIDTH + j < rows_B && col < cols_B)) // don't go overbounds since d_A and d_B are not necessarily the same shape
 				{
-					c_val += d_A[row * cols_A + i * TILE_WIDTH + k] * d_B[(i * TILE_WIDTH + k) * cols_B + col];
+					c_val += d_A[row * cols_A + i * TILE_WIDTH + j] * d_B[(i * TILE_WIDTH + j) * cols_B + col];
 				}
 			}
 		}
@@ -78,9 +84,9 @@ __global__ void CUDA_MAT_MULT_SHARED(T *d_A, T *d_B, T *d_C, int rows_A, int col
 		s_B[threadIdx.y][threadIdx.x] = (i * SHARED_TILE_WIDTH + threadIdx.y < rows_B && col < cols_B) ? d_B[(i * SHARED_TILE_WIDTH + threadIdx.y) * cols_B + col] : 0.0;
 
 		__syncthreads();
-		for (int k = 0; k < SHARED_TILE_WIDTH; k++)
+		for (int j = 0; j < SHARED_TILE_WIDTH; j++)
 		{
-			c_val += s_A[threadIdx.y][k] * s_B[k][threadIdx.x];
+			c_val += s_A[threadIdx.y][j] * s_B[j][threadIdx.x];
 		}
 		__syncthreads();
 	}
