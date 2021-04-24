@@ -22,8 +22,8 @@
 #include "cuda_ops.cu"
 
 // Select from TILED, SHARED, or neither (comment out both), neither defaults to regular global MMM
-#define TILED
-// #define SHARED
+// #define TILED
+#define SHARED
 
 #define TILE_WIDTH 16
 
