@@ -4,7 +4,7 @@
 #include <cassert>
 
 #define EPOCHS 100
-#define START 600
+#define START 100
 #define END 600
 #define STEP_SIZE 100
 
