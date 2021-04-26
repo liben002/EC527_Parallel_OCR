@@ -3,7 +3,7 @@
 #include <time.h>
 #include <cassert>
 
-#define EPOCHS 100
+#define EPOCHS 30
 #define THREADS 4
 
 // int clock_gettime(clockid_t clk_id, struct timespec *tp);
@@ -32,7 +32,6 @@ void detect_threads_setting()
 	for (i=0; i<1; i++) {
 		ognt = omp_get_num_threads();
 	}
-	ognt = THREADS;
 
 	printf("omp's default number of threads is %d\n", ognt);
 

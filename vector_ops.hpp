@@ -163,8 +163,8 @@ void equal_shuffle(std::vector<std::vector<std::valarray<T>>> &A, std::vector<st
 		std::cerr << "ERROR (" << __func__ << ") : " << "Can not equally shuffle two vectors with different sizes: " << A.size() << " and " << B.size() << std::endl;
 		std::exit(EXIT_FAILURE);
 	}
-	// PT: Good speedup
-	#pragma omp parallel for
+	// PT: Good speedup, but risky
+	// #pragma omp parallel for
 	for (size_t i = 0; i < A.size(); i++) // For every element in A and B
 	{
 		// Genrating random index < size of A and B
