@@ -1,0 +1,203 @@
+g++ main.cpp -O3 -std=c++11 -fopenmp -lrt -lm -o parallel
+omp's default number of threads is 4
+Using 4 threads for OpenMP
+Starting test with row_length of 100
+INFO: Network constructed successfully
+===============================================================
+		+ MODEL SUMMARY +		
+===============================================================
+1) Neurons : 784, Activation : none, kernel Shape : (784, 784)
+2) Neurons : 100, Activation : relu, kernel Shape : (784, 100)
+3) Neurons : 10, Activation : sigmoid, kernel Shape : (100, 10)
+===============================================================
+INFO: Training Started
+Training: Epoch 1/20, Loss: 1.107, Accuracy: 0.3848, Taken time: 1.696 seconds
+Training: Epoch 2/20, Loss: 0.5286, Accuracy: 0.7174, Taken time: 1.655 seconds
+Training: Epoch 3/20, Loss: 0.3772, Accuracy: 0.8176, Taken time: 1.659 seconds
+Training: Epoch 4/20, Loss: 0.2869, Accuracy: 0.8697, Taken time: 1.669 seconds
+Training: Epoch 5/20, Loss: 0.2201, Accuracy: 0.9038, Taken time: 1.652 seconds
+Training: Epoch 6/20, Loss: 0.1776, Accuracy: 0.9078, Taken time: 1.667 seconds
+Training: Epoch 7/20, Loss: 0.1223, Accuracy: 0.9499, Taken time: 1.677 seconds
+Training: Epoch 8/20, Loss: 0.1029, Accuracy: 0.9619, Taken time: 1.683 seconds
+Training: Epoch 9/20, Loss: 0.07801, Accuracy: 0.9699, Taken time: 1.655 seconds
+Training: Epoch 10/20, Loss: 0.05189, Accuracy: 0.988, Taken time: 1.678 seconds
+Training: Epoch 11/20, Loss: 0.03518, Accuracy: 0.994, Taken time: 1.667 seconds
+Training: Epoch 12/20, Loss: 0.02656, Accuracy: 0.998, Taken time: 1.655 seconds
+Training: Epoch 13/20, Loss: 0.02118, Accuracy: 0.994, Taken time: 1.674 seconds
+Training: Epoch 14/20, Loss: 0.01282, Accuracy: 0.998, Taken time: 1.679 seconds
+Training: Epoch 15/20, Loss: 0.01024, Accuracy: 1, Taken time: 1.676 seconds
+Training: Epoch 16/20, Loss: 0.009206, Accuracy: 1, Taken time: 1.691 seconds
+Training: Epoch 17/20, Loss: 0.006436, Accuracy: 1, Taken time: 1.678 seconds
+Training: Epoch 18/20, Loss: 0.006357, Accuracy: 1, Taken time: 1.674 seconds
+Training: Epoch 19/20, Loss: 0.003502, Accuracy: 1, Taken time: 1.694 seconds
+Training: Epoch 20/20, Loss: 0.002626, Accuracy: 1, Taken time: 1.664 seconds
+Testing predictions
+Time for learning over 20 epochs: 35.302975 seconds
+Starting test with row_length of 200
+INFO: Network constructed successfully
+===============================================================
+		+ MODEL SUMMARY +		
+===============================================================
+1) Neurons : 784, Activation : none, kernel Shape : (784, 784)
+2) Neurons : 200, Activation : relu, kernel Shape : (784, 200)
+3) Neurons : 10, Activation : sigmoid, kernel Shape : (200, 10)
+===============================================================
+INFO: Training Started
+Training: Epoch 1/20, Loss: 1.027, Accuracy: 0.4749, Taken time: 2.428 seconds
+Training: Epoch 2/20, Loss: 0.4086, Accuracy: 0.8016, Taken time: 2.454 seconds
+Training: Epoch 3/20, Loss: 0.2968, Accuracy: 0.8717, Taken time: 2.414 seconds
+Training: Epoch 4/20, Loss: 0.2175, Accuracy: 0.9118, Taken time: 2.45 seconds
+Training: Epoch 5/20, Loss: 0.1752, Accuracy: 0.9399, Taken time: 2.415 seconds
+Training: Epoch 6/20, Loss: 0.1208, Accuracy: 0.9559, Taken time: 2.441 seconds
+Training: Epoch 7/20, Loss: 0.09005, Accuracy: 0.98, Taken time: 2.459 seconds
+Training: Epoch 8/20, Loss: 0.05969, Accuracy: 0.988, Taken time: 2.427 seconds
+Training: Epoch 9/20, Loss: 0.03619, Accuracy: 0.996, Taken time: 2.45 seconds
+Training: Epoch 10/20, Loss: 0.03052, Accuracy: 0.998, Taken time: 2.418 seconds
+Training: Epoch 11/20, Loss: 0.009614, Accuracy: 1, Taken time: 2.428 seconds
+Training: Epoch 12/20, Loss: 0.003659, Accuracy: 1, Taken time: 2.418 seconds
+Training: Epoch 13/20, Loss: 0.001085, Accuracy: 1, Taken time: 2.435 seconds
+Training: Epoch 14/20, Loss: 0.0004316, Accuracy: 1, Taken time: 2.417 seconds
+Training: Epoch 15/20, Loss: 0.0001378, Accuracy: 1, Taken time: 2.448 seconds
+Training: Epoch 16/20, Loss: 6.96e-05, Accuracy: 1, Taken time: 2.436 seconds
+Training: Epoch 17/20, Loss: 5.744e-05, Accuracy: 1, Taken time: 2.423 seconds
+Training: Epoch 18/20, Loss: 5.007e-05, Accuracy: 1, Taken time: 2.445 seconds
+Training: Epoch 19/20, Loss: 4.33e-05, Accuracy: 1, Taken time: 2.416 seconds
+Training: Epoch 20/20, Loss: 3.687e-05, Accuracy: 1, Taken time: 2.451 seconds
+Testing predictions
+Time for learning over 20 epochs: 50.590112 seconds
+Starting test with row_length of 300
+INFO: Network constructed successfully
+===============================================================
+		+ MODEL SUMMARY +		
+===============================================================
+1) Neurons : 784, Activation : none, kernel Shape : (784, 784)
+2) Neurons : 300, Activation : relu, kernel Shape : (784, 300)
+3) Neurons : 10, Activation : sigmoid, kernel Shape : (300, 10)
+===============================================================
+INFO: Training Started
+Training: Epoch 1/20, Loss: 0.9933, Accuracy: 0.497, Taken time: 3.215 seconds
+Training: Epoch 2/20, Loss: 0.4355, Accuracy: 0.8216, Taken time: 3.192 seconds
+Training: Epoch 3/20, Loss: 0.302, Accuracy: 0.8717, Taken time: 3.216 seconds
+Training: Epoch 4/20, Loss: 0.1948, Accuracy: 0.9259, Taken time: 3.23 seconds
+Training: Epoch 5/20, Loss: 0.1487, Accuracy: 0.9679, Taken time: 3.24 seconds
+Training: Epoch 6/20, Loss: 0.1127, Accuracy: 0.9719, Taken time: 3.223 seconds
+Training: Epoch 7/20, Loss: 0.07308, Accuracy: 0.98, Taken time: 3.226 seconds
+Training: Epoch 8/20, Loss: 0.06617, Accuracy: 0.986, Taken time: 3.217 seconds
+Training: Epoch 9/20, Loss: 0.0447, Accuracy: 0.99, Taken time: 3.194 seconds
+Training: Epoch 10/20, Loss: 0.02099, Accuracy: 0.998, Taken time: 3.21 seconds
+Training: Epoch 11/20, Loss: 0.007612, Accuracy: 1, Taken time: 3.19 seconds
+Training: Epoch 12/20, Loss: 0.007298, Accuracy: 1, Taken time: 3.21 seconds
+Training: Epoch 13/20, Loss: 0.001318, Accuracy: 1, Taken time: 3.216 seconds
+Training: Epoch 14/20, Loss: 0.002974, Accuracy: 1, Taken time: 3.204 seconds
+Training: Epoch 15/20, Loss: 2.498e-05, Accuracy: 1, Taken time: 3.241 seconds
+Training: Epoch 16/20, Loss: 5.302e-06, Accuracy: 1, Taken time: 3.206 seconds
+Training: Epoch 17/20, Loss: 4.175e-06, Accuracy: 1, Taken time: 3.209 seconds
+Training: Epoch 18/20, Loss: 3.574e-06, Accuracy: 1, Taken time: 3.213 seconds
+Training: Epoch 19/20, Loss: 3.196e-06, Accuracy: 1, Taken time: 3.197 seconds
+Training: Epoch 20/20, Loss: 2.798e-06, Accuracy: 1, Taken time: 3.213 seconds
+Testing predictions
+Time for learning over 20 epochs: 66.173672 seconds
+Starting test with row_length of 400
+INFO: Network constructed successfully
+===============================================================
+		+ MODEL SUMMARY +		
+===============================================================
+1) Neurons : 784, Activation : none, kernel Shape : (784, 784)
+2) Neurons : 400, Activation : relu, kernel Shape : (784, 400)
+3) Neurons : 10, Activation : sigmoid, kernel Shape : (400, 10)
+===============================================================
+INFO: Training Started
+Training: Epoch 1/20, Loss: 0.9561, Accuracy: 0.479, Taken time: 4.127 seconds
+Training: Epoch 2/20, Loss: 0.4674, Accuracy: 0.8096, Taken time: 4.125 seconds
+Training: Epoch 3/20, Loss: 0.3078, Accuracy: 0.8778, Taken time: 4.096 seconds
+Training: Epoch 4/20, Loss: 0.2083, Accuracy: 0.9299, Taken time: 4.126 seconds
+Training: Epoch 5/20, Loss: 0.144, Accuracy: 0.9519, Taken time: 4.131 seconds
+Training: Epoch 6/20, Loss: 0.1168, Accuracy: 0.9739, Taken time: 4.152 seconds
+Training: Epoch 7/20, Loss: 0.06117, Accuracy: 0.988, Taken time: 4.16 seconds
+Training: Epoch 8/20, Loss: 0.02595, Accuracy: 0.994, Taken time: 4.186 seconds
+Training: Epoch 9/20, Loss: 0.02135, Accuracy: 0.992, Taken time: 4.083 seconds
+Training: Epoch 10/20, Loss: 0.009753, Accuracy: 1, Taken time: 4.099 seconds
+Training: Epoch 11/20, Loss: 0.01237, Accuracy: 1, Taken time: 4.133 seconds
+Training: Epoch 12/20, Loss: 0.002758, Accuracy: 1, Taken time: 4.081 seconds
+Training: Epoch 13/20, Loss: 3.354e-05, Accuracy: 1, Taken time: 4.173 seconds
+Training: Epoch 14/20, Loss: 3.655e-06, Accuracy: 1, Taken time: 4.096 seconds
+Training: Epoch 15/20, Loss: 3.089e-06, Accuracy: 1, Taken time: 4.145 seconds
+Training: Epoch 16/20, Loss: 2.365e-06, Accuracy: 1, Taken time: 4.102 seconds
+Training: Epoch 17/20, Loss: 2.002e-06, Accuracy: 1, Taken time: 4.082 seconds
+Training: Epoch 18/20, Loss: 1.715e-06, Accuracy: 1, Taken time: 4.135 seconds
+Training: Epoch 19/20, Loss: 1.485e-06, Accuracy: 1, Taken time: 4.158 seconds
+Training: Epoch 20/20, Loss: 1.351e-06, Accuracy: 1, Taken time: 4.135 seconds
+Testing predictions
+Time for learning over 20 epochs: 84.422932 seconds
+Starting test with row_length of 500
+INFO: Network constructed successfully
+===============================================================
+		+ MODEL SUMMARY +		
+===============================================================
+1) Neurons : 784, Activation : none, kernel Shape : (784, 784)
+2) Neurons : 500, Activation : relu, kernel Shape : (784, 500)
+3) Neurons : 10, Activation : sigmoid, kernel Shape : (500, 10)
+===============================================================
+INFO: Training Started
+Training: Epoch 1/20, Loss: 0.9788, Accuracy: 0.521, Taken time: 4.872 seconds
+Training: Epoch 2/20, Loss: 0.4415, Accuracy: 0.8016, Taken time: 4.865 seconds
+Training: Epoch 3/20, Loss: 0.3104, Accuracy: 0.8818, Taken time: 4.876 seconds
+Training: Epoch 4/20, Loss: 0.224, Accuracy: 0.9259, Taken time: 4.852 seconds
+Training: Epoch 5/20, Loss: 0.172, Accuracy: 0.9379, Taken time: 4.836 seconds
+Training: Epoch 6/20, Loss: 0.1357, Accuracy: 0.9699, Taken time: 4.878 seconds
+Training: Epoch 7/20, Loss: 0.09501, Accuracy: 0.986, Taken time: 4.872 seconds
+Training: Epoch 8/20, Loss: 0.06043, Accuracy: 0.99, Taken time: 4.869 seconds
+Training: Epoch 9/20, Loss: 0.02805, Accuracy: 0.998, Taken time: 4.913 seconds
+Training: Epoch 10/20, Loss: 0.02003, Accuracy: 0.998, Taken time: 4.892 seconds
+Training: Epoch 11/20, Loss: 0.01085, Accuracy: 1, Taken time: 4.889 seconds
+Training: Epoch 12/20, Loss: 0.006511, Accuracy: 0.994, Taken time: 4.862 seconds
+Training: Epoch 13/20, Loss: 0.000247, Accuracy: 1, Taken time: 4.887 seconds
+Training: Epoch 14/20, Loss: 1.059e-06, Accuracy: 1, Taken time: 4.914 seconds
+Training: Epoch 15/20, Loss: 7.897e-07, Accuracy: 1, Taken time: 4.889 seconds
+Training: Epoch 16/20, Loss: 5.922e-07, Accuracy: 1, Taken time: 4.887 seconds
+Training: Epoch 17/20, Loss: 4.991e-07, Accuracy: 1, Taken time: 4.886 seconds
+Training: Epoch 18/20, Loss: 4.229e-07, Accuracy: 1, Taken time: 4.861 seconds
+Training: Epoch 19/20, Loss: 3.662e-07, Accuracy: 1, Taken time: 4.875 seconds
+Training: Epoch 20/20, Loss: 3.234e-07, Accuracy: 1, Taken time: 4.893 seconds
+Testing predictions
+Time for learning over 20 epochs: 99.483427 seconds
+Starting test with row_length of 600
+INFO: Network constructed successfully
+===============================================================
+		+ MODEL SUMMARY +		
+===============================================================
+1) Neurons : 784, Activation : none, kernel Shape : (784, 784)
+2) Neurons : 600, Activation : relu, kernel Shape : (784, 600)
+3) Neurons : 10, Activation : sigmoid, kernel Shape : (600, 10)
+===============================================================
+INFO: Training Started
+Training: Epoch 1/20, Loss: 0.8461, Accuracy: 0.5772, Taken time: 5.778 seconds
+Training: Epoch 2/20, Loss: 0.4276, Accuracy: 0.8176, Taken time: 5.796 seconds
+Training: Epoch 3/20, Loss: 0.2847, Accuracy: 0.8958, Taken time: 5.758 seconds
+Training: Epoch 4/20, Loss: 0.1698, Accuracy: 0.9399, Taken time: 5.788 seconds
+Training: Epoch 5/20, Loss: 0.1583, Accuracy: 0.9579, Taken time: 5.779 seconds
+Training: Epoch 6/20, Loss: 0.1399, Accuracy: 0.9639, Taken time: 5.807 seconds
+Training: Epoch 7/20, Loss: 0.07422, Accuracy: 0.986, Taken time: 5.769 seconds
+Training: Epoch 8/20, Loss: 0.03223, Accuracy: 0.994, Taken time: 5.754 seconds
+Training: Epoch 9/20, Loss: 0.02497, Accuracy: 0.998, Taken time: 5.786 seconds
+Training: Epoch 10/20, Loss: 0.01084, Accuracy: 1, Taken time: 5.747 seconds
+Training: Epoch 11/20, Loss: 0.006163, Accuracy: 1, Taken time: 5.778 seconds
+Training: Epoch 12/20, Loss: 0.003967, Accuracy: 1, Taken time: 5.775 seconds
+Training: Epoch 13/20, Loss: 6.205e-07, Accuracy: 1, Taken time: 5.773 seconds
+Training: Epoch 14/20, Loss: 4.687e-07, Accuracy: 1, Taken time: 5.811 seconds
+Training: Epoch 15/20, Loss: 3.495e-07, Accuracy: 1, Taken time: 5.748 seconds
+Training: Epoch 16/20, Loss: 3.025e-07, Accuracy: 1, Taken time: 5.796 seconds
+Training: Epoch 17/20, Loss: 2.444e-07, Accuracy: 1, Taken time: 5.794 seconds
+Training: Epoch 18/20, Loss: 2.121e-07, Accuracy: 1, Taken time: 5.739 seconds
+Training: Epoch 19/20, Loss: 1.829e-07, Accuracy: 1, Taken time: 5.781 seconds
+Training: Epoch 20/20, Loss: 1.567e-07, Accuracy: 1, Taken time: 5.756 seconds
+Testing predictions
+Time for learning over 20 epochs: 117.400555 seconds
+ROW_LENGTH, TIME
+100.000, 35.303
+200.000, 50.590
+300.000, 66.174
+400.000, 84.423
+500.000, 99.483
+600.000, 117.401
+DONE
