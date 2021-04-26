@@ -3,10 +3,11 @@
 #include <time.h>
 #include <cassert>
 
-#define EPOCHS 30
+#define EPOCHS 20
 #define THREADS 4
-
-// int clock_gettime(clockid_t clk_id, struct timespec *tp);
+#define START 100
+#define END 600
+#define STEP_SIZE 100
 
 double interval(struct timespec start, struct timespec end)
 {
@@ -59,12 +60,12 @@ void detect_threads_setting()
  * Function to test neural network
  * @returns none
  */
-static void test() {
+static void test(int rowlen) {
 	// Creating network with 3 layers for "iris.csv"
 	// First layer neurons must match testing params
 		machine_learning::neural_network::NeuralNetwork myNN =
 			machine_learning::neural_network::NeuralNetwork(
-				{{784, "none"}, {100, "relu"}, {10, "sigmoid"}});
+				{{784, "none"}, {rowlen, "relu"}, {10, "sigmoid"}});
 
 	// Printing summary of model
 	myNN.summary();
@@ -85,23 +86,34 @@ static void test() {
  * @returns 0 on exit
  */
 int main() {
-
-	// struct timespec time_start_CPU, time_end_CPU;
 	#ifdef _OPENMP
 	detect_threads_setting();
 	#endif
+	double duration_table[(END-START) / STEP_SIZE + 1][2];
 
-	// start the timer
-	// clock_gettime(CLOCK_PROCESS_CPUTIME_ID, &time_start_CPU);
-	auto start = std::chrono::high_resolution_clock::now();  // Start clock
+	for (int i = START; i <= END; i+= STEP_SIZE)
+	{
+		duration_table[i/100 -1][0] = i;
+		printf("Starting test with row_length of %d\n", i);
+		// start the timer
+		auto start = std::chrono::high_resolution_clock::now();  // Start clock
 
-	test();
+		test(i);
 
-	// stop the timer
-	// clock_gettime(CLOCK_PROCESS_CPUTIME_ID, &time_end_CPU);
-	auto stop = std::chrono::high_resolution_clock::now();  // Stoping the clock
-	auto duration = std::chrono::duration_cast<std::chrono::microseconds>(stop - start);
+		// stop the timer
+		auto stop = std::chrono::high_resolution_clock::now();  // Stopping the clock
+		auto duration = std::chrono::duration_cast<std::chrono::microseconds>(stop - start);
 
-	printf("Time for learning over %d epochs: %f seconds\n", EPOCHS, duration.count() / 1e6);
+		printf("Time for learning over %d epochs: %f seconds\n", EPOCHS, duration.count() / 1e6);
+		duration_table[i/100 -1][1] = duration.count() / 1e6;
+	}
+
+	printf("ROW_LENGTH, TIME\n");
+	for (int i = 0; i < (END-START) / STEP_SIZE + 1; i++)
+	{
+		printf("%.3f, %.3f\n", duration_table[i][0], duration_table[i][1]);
+	}
+
+	printf("DONE\n");
 	return 0;
 }
