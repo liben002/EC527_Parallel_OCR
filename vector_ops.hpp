@@ -323,8 +323,8 @@ std::vector<std::vector<std::valarray<T>>> minmax_scaler(const std::vector<std::
 			mmin = std::min(mmin, B[j][0][i]);
 			mmax = std::max(mmax, B[j][0][i]);
 		}
-		// PT: Too much overhead here?
-		#pragma omp parallel for
+		// PT: Better speedup with dynamic scheduling
+		#pragma omp parallel for schedule(dynamic)
 		for (size_t j = 0; j < length; j++) {
 			B[j][0][i] = ((B[j][0][i] - mmin) / (mmax - mmin)) * (high - low) + low; // Applying min-max scaler formula
 		}
