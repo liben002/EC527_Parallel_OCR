@@ -1,6 +1,6 @@
 #!/bin/bash -l
 
-#$ -P my_project
+#$ -P ec527
 
 #$ -pe omp 8
 

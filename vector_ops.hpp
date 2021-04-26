@@ -198,8 +198,8 @@ void uniform_random_initialization(std::vector<std::valarray<T>> &A, const std::
 	{
 		std::valarray<T> row;  // Making empty row which will be inserted in vector
 		row.resize(shape.second);
-		// PT: Good speedup
-		#pragma omp parallel for
+		// PT: Good speedup, but risky
+		// #pragma omp parallel for
 		for (auto &r : row) {             // For every element in row
 			r = distribution(generator);  // copy random number
 		}
