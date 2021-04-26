@@ -507,10 +507,6 @@ std::vector<std::valarray<T>> operator-(
 	for (size_t i = 0; i < A.size(); i++) {  // For every row
 		C.push_back(A[i] - B[i]);            // Elementwise substraction
 	}
-	// std::vector<std::valarray<T>> C;         // Vector to store result
-	// for (size_t i = 0; i < A.size(); i++) {  // For every row
-	// 	C.push_back(A[i] - B[i]);            // Elementwise substraction
-	// }
 
 	return C;  // Return new resultant 2D vector
 }
