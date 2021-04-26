@@ -2,7 +2,7 @@
 
 #$ -P ec527
 
-#$ -pe omp 4
+#$ -pe omp 8
 
 
 module load gcc

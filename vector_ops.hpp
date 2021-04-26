@@ -97,7 +97,6 @@ std::valarray<T> insert_element(const std::valarray<T> &A, const T &ele)
 {
 	std::valarray<T> B;      // New 1D vector to store resultant vector
 	B.resize(A.size() + 1);  // Resizing it accordingly
-	#pragma omp parallel for
 	for (size_t i = 0; i < A.size(); i++) {  // For every element in A
 		B[i] = A[i];                         // Copy element in B
 	}
@@ -119,7 +118,6 @@ std::valarray<T> pop_front(const std::valarray<T> &A)
 {
 	std::valarray<T> B;      // New 1D vector to store resultant vector
 	B.resize(A.size() - 1);  // Resizing it accordingly
-	#pragma omp parallel for
 	for (size_t i = 1; i < A.size(); i++) {           // // For every (except first) element in A
 		B[i - 1] = A[i];  // Copy element in B with left shifted position
 	}
@@ -139,7 +137,6 @@ std::valarray<T> pop_back(const std::valarray<T> &A)
 {
 	std::valarray<T> B;      // New 1D vector to store resultant vector
 	B.resize(A.size() - 1);  // Resizing it accordingly
-	#pragma omp parallel for
 	for (size_t i = 0; i < A.size() - 1; i++) {       // For every (except last) element in A
 		B[i] = A[i];  // Copy element in B
 	}
@@ -547,6 +544,7 @@ std::vector<std::valarray<T>> multiply(const std::vector<std::valarray<T>> &A, c
 	// 		}
 	// 	}
 	// }
+	// return C;
 
 
 	std::vector<std::valarray<T>> C;  // Vector to store result
@@ -589,7 +587,7 @@ std::vector<std::valarray<T>> hadamard_product(const std::vector<std::valarray<T
 	}
 	// PT: Major speedup
 	std::vector<std::valarray<T>> C(A.size());  // Vector to store result
-	#pragma omp parallel for
+	// #pragma omp parallel for
 	for (size_t i = 0; i < A.size(); i++) {
 		C[i] = A[i] * B[i];  // Elementwise multiplication
 	}
