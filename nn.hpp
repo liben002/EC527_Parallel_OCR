@@ -480,6 +480,7 @@ class NeuralNetwork {
 	{
 		// Store predicted values
 		std::vector<std::vector<std::valarray<double>>> predicted_batch(X.size());
+		// PT: Slight overhead
 		for (size_t i = 0; i < X.size(); i++) // For every sample
 		{
 			// Push predicted values
@@ -602,6 +603,8 @@ class NeuralNetwork {
 	{
 		std::cout << "INFO: Evaluation Started" << std::endl;
 		double acc = 0, loss = 0;  // intialize performance metrics with zero
+		// PT: Not worth overhead
+		// #pragma omp parallel for shared(acc) private(pred) reduction(+:loss)
 		for (size_t i = 0; i < X.size(); i++) // For every sample in input
 		{
 			// Get predictions

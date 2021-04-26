@@ -2,9 +2,6 @@
 #include <iostream>
 #include <time.h>
 #include <cassert>
-#ifdef _OPENMP
-#include <omp.h>
-#endif
 
 #define EPOCHS 100
 #define THREADS 4
@@ -35,6 +32,7 @@ void detect_threads_setting()
 	for (i=0; i<1; i++) {
 		ognt = omp_get_num_threads();
 	}
+	ognt = THREADS;
 
 	printf("omp's default number of threads is %d\n", ognt);
 

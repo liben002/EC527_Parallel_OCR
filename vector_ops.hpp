@@ -16,7 +16,9 @@
 #include <random>
 #include <valarray>
 #include <vector>
+#ifdef _OPENMP
 #include <omp.h>
+#endif
 
 /**
  * @namespace machine_learning
@@ -95,7 +97,7 @@ std::valarray<T> insert_element(const std::valarray<T> &A, const T &ele)
 {
 	std::valarray<T> B;      // New 1D vector to store resultant vector
 	B.resize(A.size() + 1);  // Resizing it accordingly
-
+	#pragma omp parallel for
 	for (size_t i = 0; i < A.size(); i++) {  // For every element in A
 		B[i] = A[i];                         // Copy element in B
 	}
@@ -117,7 +119,7 @@ std::valarray<T> pop_front(const std::valarray<T> &A)
 {
 	std::valarray<T> B;      // New 1D vector to store resultant vector
 	B.resize(A.size() - 1);  // Resizing it accordingly
-
+	#pragma omp parallel for
 	for (size_t i = 1; i < A.size(); i++) {           // // For every (except first) element in A
 		B[i - 1] = A[i];  // Copy element in B with left shifted position
 	}
@@ -137,7 +139,7 @@ std::valarray<T> pop_back(const std::valarray<T> &A)
 {
 	std::valarray<T> B;      // New 1D vector to store resultant vector
 	B.resize(A.size() - 1);  // Resizing it accordingly
-
+	#pragma omp parallel for
 	for (size_t i = 0; i < A.size() - 1; i++) {       // For every (except last) element in A
 		B[i] = A[i];  // Copy element in B
 	}
@@ -161,7 +163,8 @@ void equal_shuffle(std::vector<std::vector<std::valarray<T>>> &A, std::vector<st
 		std::cerr << "ERROR (" << __func__ << ") : " << "Can not equally shuffle two vectors with different sizes: " << A.size() << " and " << B.size() << std::endl;
 		std::exit(EXIT_FAILURE);
 	}
-
+	// PT: Good speedup
+	#pragma omp parallel for
 	for (size_t i = 0; i < A.size(); i++) // For every element in A and B
 	{
 		// Genrating random index < size of A and B
@@ -195,6 +198,8 @@ void uniform_random_initialization(std::vector<std::valarray<T>> &A, const std::
 	{
 		std::valarray<T> row;  // Making empty row which will be inserted in vector
 		row.resize(shape.second);
+		// PT: Good speedup
+		#pragma omp parallel for
 		for (auto &r : row) {             // For every element in row
 			r = distribution(generator);  // copy random number
 		}
@@ -253,6 +258,7 @@ template <typename T>
 T sum(const std::vector<std::valarray<T>> &A)
 {
 	T cur_sum = 0;             // Initially sum is zero
+	// PT: Major slowdown here with parallel for
 	for (const auto &a : A) {  // For every row in A
 		cur_sum += a.sum();    // Add sum of that row to current sum
 	}
@@ -269,6 +275,7 @@ template <typename T>
 std::pair<size_t, size_t> get_shape(const std::vector<std::valarray<T>> &A)
 {
 	const size_t sub_size = (*A.begin()).size();
+	// PT: omp parallel for too slow
 	for (const auto &a : A)
 	{
 		// If supplied vector don't have same shape in all rows
@@ -304,20 +311,22 @@ std::vector<std::vector<std::valarray<T>>> minmax_scaler(const std::vector<std::
 	}
 
 	int length = B.size();
-	T min, max;
+	T mmin, mmax;
 	for (size_t i = 0; i < shape.second; i++)
 	{
-		min = B[0][0][i], max = B[0][0][i];
+		mmin = B[0][0][i], mmax = B[0][0][i];
+		// PT: Good speedup here
+		#pragma omp parallel for reduction(min: mmin) reduction(max: mmax)
 		for (size_t j = 0; j < length; j++)
 		{
 			// Updating minimum and maximum values
-			min = std::min(min, B[j][0][i]);
-			max = std::max(max, B[j][0][i]);
+			mmin = std::min(mmin, B[j][0][i]);
+			mmax = std::max(mmax, B[j][0][i]);
 		}
-
+		// PT: Too much overhead here?
 		#pragma omp parallel for
 		for (size_t j = 0; j < length; j++) {
-			B[j][0][i] = ((B[j][0][i] - min) / (max - min)) * (high - low) + low; // Applying min-max scaler formula
+			B[j][0][i] = ((B[j][0][i] - mmin) / (mmax - mmin)) * (high - low) + low; // Applying min-max scaler formula
 		}
 	}
 	return B;  // Return new resultant 3D vector
@@ -357,6 +366,7 @@ std::vector<std::valarray<T>> apply_function(const std::vector<std::valarray<T>>
 	std::vector<std::valarray<double>> B = A; // New vector to store resultant vector
 
 	int length = B.size();
+	// PT: Too much overhead due to function call?
 	for (int i = 0 ; i < length; i++) {     // For every row in vector
 		B[i] = B[i].apply(func);  // Apply function to that row
 	}
@@ -380,6 +390,7 @@ std::vector<std::valarray<T>> operator*(const std::vector<std::valarray<T>> &A, 
 	std::vector<std::valarray<double>> B = A; // New vector to store resultant vector
 
 	int length = B.size();
+	// PT: Too much overhead
 	for (int i = 0 ; i < length; i++) {  // For every row in vector
 		B[i] = B[i] * val;     // Multiply row with scaler
 	}
@@ -433,6 +444,7 @@ std::vector<std::valarray<T>> transpose(const std::vector<std::valarray<T>> &A)
 	{
 		std::valarray<T> row;
 		row.resize(shape.first);
+		// PT: Massive slowdown (3x)
 		for (size_t i = 0; i < shape.first; i++) {
 			row[i] = A[i][j];
 		}
@@ -495,6 +507,10 @@ std::vector<std::valarray<T>> operator-(
 	for (size_t i = 0; i < A.size(); i++) {  // For every row
 		C.push_back(A[i] - B[i]);            // Elementwise substraction
 	}
+	// std::vector<std::valarray<T>> C;         // Vector to store result
+	// for (size_t i = 0; i < A.size(); i++) {  // For every row
+	// 	C.push_back(A[i] - B[i]);            // Elementwise substraction
+	// }
 
 	return C;  // Return new resultant 2D vector
 }
@@ -519,6 +535,23 @@ std::vector<std::valarray<T>> multiply(const std::vector<std::valarray<T>> &A, c
 		std::cerr << "ERROR (" << __func__ << ") : " << "Vectors are not eligible for multiplication " << shape_a << " and " << shape_b << std::endl;
 		std::exit(EXIT_FAILURE);
 	}
+	// PT: Too slow
+	// std::vector<std::valarray<T>> C(shape_a.first, std::valarray<T>(shape_b.second));  // Vector to store result
+	// size_t i,j,k;
+	// #pragma omp parallel shared(A,B,C) private(i,j,k)
+	// {
+	// 	#pragma omp for schedule(static)
+	// 	for (size_t i = 0; i < shape_a.first; i++)
+	// 	{
+	// 		for (size_t j = 0; j < shape_b.second; j++)
+	// 		{
+	// 			for (size_t k = 0; k < shape_a.second; k++) {
+	// 				C[i][j] += A[i][k] * B[k][j];
+	// 			}
+	// 		}
+	// 	}
+	// }
+
 
 	std::vector<std::valarray<T>> C;  // Vector to store result
 	// Normal matrix multiplication
@@ -558,11 +591,17 @@ std::vector<std::valarray<T>> hadamard_product(const std::vector<std::valarray<T
 		std::cerr << "ERROR (" << __func__ << ") : " << "Vectors have different shapes " << shape_a << " and " << shape_b << std::endl;
 		std::exit(EXIT_FAILURE);
 	}
-
-	std::vector<std::valarray<T>> C;  // Vector to store result
+	// PT: Major speedup
+	std::vector<std::valarray<T>> C(A.size());  // Vector to store result
+	#pragma omp parallel for
 	for (size_t i = 0; i < A.size(); i++) {
-		C.push_back(A[i] * B[i]);  // Elementwise multiplication
+		C[i] = A[i] * B[i];  // Elementwise multiplication
 	}
+
+	// std::vector<std::valarray<T>> C;  // Vector to store result
+	// for (size_t i = 0; i < A.size(); i++) {
+	// 	C.push_back(A[i] * B[i]);  // Elementwise multiplication
+	// }
 
 	return C;  // Return new resultant 2D vector
 }
