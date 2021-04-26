@@ -1,0 +1,35 @@
+rm serial parallel avx
+icpc main.cpp -use-intel-optimized-headers -O3 -std=c++11 -openmp -lrt -lm -o avx 
+omp's default number of threads is 4
+Using 4 threads for OpenMP
+Starting test with row_length of 100
+INFO: Network constructed successfully
+===============================================================
+		+ MODEL SUMMARY +		
+===============================================================
+1) Neurons : 784, Activation : none, kernel Shape : (784, 784)
+2) Neurons : 100, Activation : relu, kernel Shape : (784, 100)
+3) Neurons : 10, Activation : sigmoid, kernel Shape : (100, 10)
+===============================================================
+INFO: Training Started
+Training: Epoch 1/20, Loss: 8.525, Accuracy: 0.1002, Taken time: 1.711 seconds
+Training: Epoch 2/20, Loss: 8.603, Accuracy: 0.0982, Taken time: 1.715 seconds
+Training: Epoch 3/20, Loss: 8.593, Accuracy: 0.0982, Taken time: 1.715 seconds
+Training: Epoch 4/20, Loss: 8.595, Accuracy: 0.0982, Taken time: 1.708 seconds
+Training: Epoch 5/20, Loss: 8.621, Accuracy: 0.0982, Taken time: 1.721 seconds
+Training: Epoch 6/20, Loss: 8.599, Accuracy: 0.0982, Taken time: 1.717 seconds
+Training: Epoch 7/20, Loss: 8.593, Accuracy: 0.0982, Taken time: 1.704 seconds
+Training: Epoch 8/20, Loss: 8.599, Accuracy: 0.0982, Taken time: 1.708 seconds
+Training: Epoch 9/20, Loss: 8.593, Accuracy: 0.0982, Taken time: 1.716 seconds
+Training: Epoch 10/20, Loss: 8.591, Accuracy: 0.0982, Taken time: 1.717 seconds
+Training: Epoch 11/20, Loss: 8.593, Accuracy: 0.0982, Taken time: 1.713 seconds
+Training: Epoch 12/20, Loss: 8.575, Accuracy: 0.0982, Taken time: 1.712 seconds
+Training: Epoch 13/20, Loss: 8.589, Accuracy: 0.0982, Taken time: 1.721 seconds
+Training: Epoch 14/20, Loss: 8.607, Accuracy: 0.0982, Taken time: 1.703 seconds
+Training: Epoch 15/20, Loss: 8.605, Accuracy: 0.0982, Taken time: 1.71 seconds
+Training: Epoch 16/20, Loss: 8.591, Accuracy: 0.0982, Taken time: 1.728 seconds
+Training: Epoch 17/20, Loss: 8.605, Accuracy: 0.0982, Taken time: 1.701 seconds
+Training: Epoch 18/20, Loss: 8.599, Accuracy: 0.0982, Taken time: 1.703 seconds
+Training: Epoch 19/20, Loss: nan, Accuracy: 0.0982, Taken time: 1.736 seconds
+Training: Epoch 20/20, Loss: nan, Accuracy: 0.0982, Taken time: 1.734 seconds
+Testing predictions
